@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include tianjy_report *.css
+recursive-include tianjy_report *.csv
+recursive-include tianjy_report *.html
+recursive-include tianjy_report *.ico
+recursive-include tianjy_report *.js
+recursive-include tianjy_report *.json
+recursive-include tianjy_report *.md
+recursive-include tianjy_report *.png
+recursive-include tianjy_report *.py
+recursive-include tianjy_report *.svg
+recursive-include tianjy_report *.txt
+recursive-exclude tianjy_report *.pyc
