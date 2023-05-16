@@ -1,0 +1,42 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-05-15 17:19:03.606314",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "type",
+  "options",
+  "sources"
+ ],
+ "fields": [
+  {
+   "fieldname": "type",
+   "fieldtype": "Data",
+   "label": "Type"
+  },
+  {
+   "fieldname": "options",
+   "fieldtype": "JSON",
+   "label": "Options"
+  },
+  {
+   "fieldname": "sources",
+   "fieldtype": "Data",
+   "label": "Sources"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-05-16 10:21:18.626297",
+ "modified_by": "Administrator",
+ "module": "Tianjy Report",
+ "name": "Tianjy Report Block",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
