@@ -7,7 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "label",
-  "blocks",
+  "layouts",
   "sources"
  ],
  "fields": [
@@ -18,21 +18,20 @@
    "translatable": 1
   },
   {
-   "fieldname": "blocks",
-   "fieldtype": "Table",
-   "label": "Blocks",
-   "options": "Tianjy Report Block"
-  },
-  {
    "fieldname": "sources",
    "fieldtype": "Table",
    "label": "Sources",
    "options": "Tianjy Report Source"
+  },
+  {
+   "fieldname": "layouts",
+   "fieldtype": "JSON",
+   "label": "\u5e03\u5c40"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-16 10:21:58.163381",
+ "modified": "2023-05-20 16:44:51.651354",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report",
