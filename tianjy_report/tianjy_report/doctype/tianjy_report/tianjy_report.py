@@ -44,9 +44,9 @@ class TianjyReport(Document):
 			options = _parse_json(source.options)
 			type = source.type
 			if type in source_groups:
-				source_groups[type][source.name] = options
+				source_groups[type][source.key] = options
 			else:
-				source_groups[type] = {source.name:options}
+				source_groups[type] = {source.key:options}
 
 
 		data = {}
@@ -57,8 +57,8 @@ class TianjyReport(Document):
 			if source['merge']:
 				data.update(source['fn'](env, source_options))
 				continue
-			for name, options in source_options.items():
-				data[name] = source['fn'](env, **options)
+			for key, options in source_options.items():
+				data[key] = source['fn'](env, **options)
 
 		# TODO: 数据层计算结构添加到返回数据中
 
