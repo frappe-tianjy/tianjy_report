@@ -2,6 +2,9 @@ import { reactive } from 'vue';
 
 import { watchDebounced, watchOnce } from '@vueuse/core';
 import { debounce } from 'lodash';
+
+import { ChartOptions, ChartProvide } from '../../type';
+
 function safeJSONParse(str:string, defaultValue = null) {
 	if (str === null || str === undefined) {
 		return defaultValue;
@@ -20,35 +23,30 @@ function safeJSONParse(str:string, defaultValue = null) {
 
 const charts:Record<string, any> = {};
 
-export async function createChart() {
-	const res = await frappe.call<{message:{name:string}}>({
-		method: 'tianjy_report.report.report.create_block',
-	});
-	return res?.message?.name||'';
+export async function createChart(reportName:string, mode:string|null) {
+	const data = mode==='template'?{
+		doctype: 'Tianjy Report Template Block',
+		report_template: reportName,
+	}:{
+		doctype:'Tianjy Report Block',
+		report:reportName,
+	};
+
+	const res = await frappe.db.insert(data);
+	debugger;
+	return res?.name||'';
 }
 
-export default function useChart(name:string) {
+export default function useChart(name:string, mode:string|null) {
 	if (!charts[name]) {
-		charts[name] = getChart(name);
+		charts[name] = getChart(name, mode);
 	}
 	return charts[name];
 }
 
-function getChart(chartName:string) {
-	const state = reactive<{
-		data:any[],
-		columns:any[],
-		loading:boolean,
-		options:Record<string, any>,
-		autosave:boolean,
-		deleting:boolean
-		doc:{
-			name?:string,
-			type?:string,
-			options:Record<string, any>,
-			doc_type?:string
-		}
-	}>({
+function getChart(chartName:string, mode:string|null):ChartProvide {
+	const blockType = mode==='template'?'Tianjy Report Template Block':'Tianjy Report Block';
+	const state = reactive<ChartOptions>({
 		data: [],
 		columns: [],
 		loading: false,
@@ -59,18 +57,18 @@ function getChart(chartName:string) {
 			name: undefined,
 			type: undefined,
 			options: {},
-			doc_type:undefined,
+			source_doctype:undefined,
 		},
 	});
 
 	async function load() {
 		state.loading = true;
-		const block = await frappe.db.get_doc('Tianjy Report Block', chartName);
+		const block = await frappe.db.get_doc(blockType, chartName);
 		if (block.options){
 			block.options = safeJSONParse(block.options);
 		}
 		state.doc = block;
-		if (!state.doc.doc_type) {
+		if (!state.doc.source_doctype) {
 			state.loading = false;
 			return;
 		}
@@ -78,33 +76,20 @@ function getChart(chartName:string) {
 	}
 	load();
 
-	function updateChartData() {
+	async function updateChartData() {
 		state.loading = true;
-		// TODO 获取数据
-		watchOnce(
-			() => state.doc.doc_type,
-			() => {
-				if (!state.doc.doc_type) { return; }
-				state.data = [{
-					project:'project1',
-					code:1,
-				}, {
-					project:'project2',
-					code:2,
-				}, {
-					project:'project3',
-					code:3,
-				}];
-				// 赋值给chart.data
-				state.loading = false;
-			}
-		);
+		if (!state.doc.source_doctype){ return; }
+		const list = await frappe.db.get_list(state.doc.source_doctype, {limit:0, fields:['*']});
+		if (!state.doc.source_doctype) { return; }
+		state.data = list;
+		// 赋值给chart.data
+		state.loading = false;
 	}
 
 	function save() {
-		frappe.db.set_value('Tianjy Report Block', chartName, {
+		frappe.db.set_value(blockType, chartName, {
 			type: state.doc.type,
-			doc_type: state.doc.doc_type,
+			source_doctype: state.doc.source_doctype,
 			options: state.doc.options,
 		});
 	}
@@ -112,10 +97,10 @@ function getChart(chartName:string) {
 
 	async function asyncUpdateQuery(doctype:string) {
 		if (!doctype) { return; }
-		if (state.doc.doc_type === doctype) { return; }
-		state.doc.doc_type = doctype;
-		await frappe.db.set_value('Tianjy Report Block', chartName, {
-			doc_type:doctype,
+		if (state.doc.source_doctype === doctype) { return; }
+		state.doc.source_doctype = doctype;
+		await frappe.db.set_value(blockType, chartName, {
+			source_doctype:doctype,
 		});
 		updateChartData();
 	}
@@ -139,7 +124,7 @@ function getChart(chartName:string) {
 
 	async function deleteChart() {
 		state.deleting = true;
-		await frappe.db.delete_doc('Tianjy Report Block', chartName);
+		await frappe.db.delete_doc(blockType, chartName);
 		state.deleting = false;
 	}
 	return Object.assign(state, {

@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<ElSelect v-model="val" filterable remote
+			@change="change"
 			:remoteMethod="search" :placeholder="label && tt(label)"
 			@focus="focus"
 			defaultFirstOption
@@ -30,6 +31,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(event: 'update:modelValue', value: any): void;
 	(event: 'label', value: string): void;
+	(event: 'change', value: string): void;
 }>();
 
 const tt = __;
@@ -87,6 +89,9 @@ const val = computed({
 		emit('label', map.value.get(v || '') || '');
 	},
 });
+function change(v){
+	emit('change', v || '');
+}
 </script>
 
 <style lang='less' scoped>

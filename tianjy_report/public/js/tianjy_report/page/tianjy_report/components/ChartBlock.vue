@@ -19,7 +19,7 @@
 			<div class="mb-1 w-[10rem] text-gray-400">Select a query</div>
 		</div>
 		<BlockActions :blockRef="blockRef" ref="actionsRef">
-			<ChartSettingForm></ChartSettingForm>
+			<ChartSettingForm @remove="emit('remove')"></ChartSettingForm>
 		</BlockActions>
 	</div>
 </template>
@@ -28,6 +28,8 @@
 import { computed, inject, provide, ref, unref, watch, defineProps } from 'vue';
 
 import { ClickOutside as vClickOutside } from 'element-plus';
+
+import { ChartOptions, ChartProvide } from '../../type';
 
 import { createChart, default as useChart } from './helper';
 import widgets from './widgets/widgets';
@@ -41,16 +43,19 @@ const props = defineProps<Props>();
 
 const blockRef = ref(null);
 const actionsRef = ref(null);
+const searchParams = new URLSearchParams(location.search);
+const reportName = searchParams.get('name');
+const mode = searchParams.get('mode');
 
-let chart = null;
+let chart:ChartProvide|null = null;
 if (!props.chartName) {
-	const chartName = await createChart();
+	const chartName = await createChart(reportName||'', mode);
 	emit('setChartName', chartName);
-	chart = useChart(chartName);
+	chart = useChart(chartName, mode);
 } else {
-	chart = useChart(props.chartName);
+	chart = useChart(props.chartName, mode);
 }
-chart.enableAutoSave();
+chart?.enableAutoSave();
 provide('chart', chart);
 
 function onClickOutside () {

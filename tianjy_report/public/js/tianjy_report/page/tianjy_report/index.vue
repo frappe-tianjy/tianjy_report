@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, defineProps, defineEmits, onMounted } from 'vue';
+import { ref, defineProps, defineEmits, onMounted, watch, computed } from 'vue';
 
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import Table from '@tiptap/extension-table';
@@ -34,30 +34,19 @@ const emit = defineEmits<Emit>();
 const searchParams = new URLSearchParams(location.search);
 const reportName = searchParams.get('name');
 const mode = searchParams.get('mode');
+const content = ref<Record<string, any>>({});
+const reportType =computed(()=>mode==='template'?'Tianjy Report Template':'Tianjy Report');
 
-let editor = null;
-onMounted(async()=>{
-	const res = await frappe.call({
-		method: 'tianjy_report.report.report.load_data',
-		args: { name: 'edb15581d6' },
-	});
-	const data = res?.message||[];
-	const barData = data.find(item=>item.chart_name==='ae972c16b2'&&item.chart_type==='Bar');
-	const doc= {
-		type:'doc',
-		content:[{
-			type:'chart',
-			attrs:{
-				chart_name:'1234',
-				chart_type:barData.chart_type,
-				data:barData.data,
-			},
-		}],
-	};
-	// editor.value.commands.setContent(doc, false);
-});
-	editor = useEditor({
+function saveLayout(json:any){
+	if (!reportName){ return; }
+	frappe.db.set_value(reportType.value, reportName, {layout:json});
+}
+const editor = useEditor({
 		content:'',
+		onUpdate: ({ editor }) => {
+			const json = editor.getJSON();
+			saveLayout(json);
+		},
 		extensions: [
 			Document,
 			Heading,
@@ -82,15 +71,25 @@ onMounted(async()=>{
 		],
 	});
 
+watch([()=>reportName, ()=>mode], async()=>{
+	if (!reportName){ return; }
+	const res:{layout?:string} = await frappe.db.get_doc(reportType.value, reportName );
+	content.value = JSON.parse(res.layout||'{}');
+}, {immediate:true});
+
+watch([content, editor], ()=>{
+	if (!editor.value){ return; }
+	editor.value.commands.setContent(content.value||'', false);
+}, {immediate:true});
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .container {
 	width: 50rem;
 	margin: 0 auto;
 }
 
-.ProseMirror {
+:deep(.ProseMirror) {
 	>*+* {
 		margin-top: 0.75em;
 	}
@@ -101,7 +100,7 @@ onMounted(async()=>{
 }
 
 /* Placeholder (on every new line) */
-.ProseMirror p.is-empty::before {
+:deep(.ProseMirror p.is-empty::before) {
 	content: attr(data-placeholder);
 	float: left;
 	color: #adb5bd;
@@ -109,7 +108,7 @@ onMounted(async()=>{
 	height: 0;
 }
 
-.ProseMirror h2.is-empty::before {
+:deep(.ProseMirror h2.is-empty::before) {
 	content: attr(data-placeholder);
 	float: left;
 	color: #adb5bd;
@@ -117,7 +116,7 @@ onMounted(async()=>{
 	height: 0;
 }
 
-.ProseMirror h3.is-empty::before {
+:deep(.ProseMirror h3.is-empty::before) {
 	content: attr(data-placeholder);
 	float: left;
 	color: #adb5bd;
@@ -125,7 +124,7 @@ onMounted(async()=>{
 	height: 0;
 }
 
-.ProseMirror h4.is-empty::before {
+:deep(.ProseMirror h4.is-empty::before) {
 	content: attr(data-placeholder);
 	float: left;
 	color: #adb5bd;
@@ -133,7 +132,7 @@ onMounted(async()=>{
 	height: 0;
 }
 
-.ProseMirror {
+:deep(.ProseMirror) {
 	table {
 		border-collapse: collapse;
 		table-layout: fixed;
@@ -189,12 +188,12 @@ onMounted(async()=>{
 	}
 }
 
-.tableWrapper {
+:deep(.tableWrapper) {
 	padding: 1rem 0;
 	overflow-x: auto;
 }
 
-.resize-cursor {
+:deep(.resize-cursor) {
 	cursor: ew-resize;
 	cursor: col-resize;
 }
