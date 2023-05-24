@@ -29,7 +29,8 @@
    "in_standard_filter": 1,
    "label": "Tianjy Report Template",
    "options": "Tianjy Report Template",
-   "reqd": 1
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fieldname": "subject",
@@ -37,8 +38,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Subject",
-   "reqd": 1,
-   "translatable": 1
+   "reqd": 1
   },
   {
    "fieldname": "layout",
@@ -59,13 +59,15 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Start Date"
+   "label": "Start Date",
+   "reqd": 1
   },
   {
    "fieldname": "end_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "End Date"
+   "label": "End Date",
+   "reqd": 1
   },
   {
    "fieldname": "blocks",
@@ -114,7 +116,7 @@
    "link_fieldname": "report"
   }
  ],
- "modified": "2023-05-24 13:56:44.579689",
+ "modified": "2023-05-24 14:47:24.926202",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report",
@@ -137,5 +139,8 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "subject"
+ "title_field": "subject",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }

@@ -19,9 +19,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Type",
-   "options": "Table\nChart",
-   "read_only": 1,
-   "reqd": 1
+   "options": "Table\nChart"
   },
   {
    "fieldname": "options",
@@ -41,15 +39,13 @@
    "in_list_view": 1,
    "label": "Tianjy Report",
    "options": "Tianjy Report",
-   "read_only": 1,
    "reqd": 1
   },
   {
    "fieldname": "template_block",
    "fieldtype": "Link",
    "label": "Tianjy Report Template Block",
-   "options": "Tianjy Report Template",
-   "read_only": 1
+   "options": "Tianjy Report Template Block"
   },
   {
    "fieldname": "filter",
@@ -62,14 +58,12 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Source DocType",
-   "options": "DocType",
-   "read_only": 1,
-   "reqd": 1
+   "options": "DocType"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-24 13:40:38.278761",
+ "modified": "2023-05-24 15:22:02.250250",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report Block",
