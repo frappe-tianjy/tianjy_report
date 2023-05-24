@@ -57,6 +57,7 @@ function getChart(chartName:string, mode:string|null):ChartProvide {
 			name: undefined,
 			type: undefined,
 			options: {},
+			filter:undefined,
 			source_doctype:undefined,
 		},
 	});
@@ -66,8 +67,11 @@ function getChart(chartName:string, mode:string|null):ChartProvide {
 		const block = await frappe.db.get_doc(blockType, chartName);
 		if (block.options){
 			block.options = safeJSONParse(block.options);
+		} else {
+			block.options = {};
 		}
 		state.doc = block;
+		state.doc.filter = safeJSONParse(block.filter);
 		if (!state.doc.source_doctype) {
 			state.loading = false;
 			return;
@@ -79,7 +83,12 @@ function getChart(chartName:string, mode:string|null):ChartProvide {
 	async function updateChartData() {
 		state.loading = true;
 		if (!state.doc.source_doctype){ return; }
-		const list = await frappe.db.get_list(state.doc.source_doctype, {limit:0, fields:['*']});
+		const list = await frappe.db.get_list(state.doc.source_doctype,
+			{
+				limit:0,
+				fields:['*'],
+				filters:state.doc.filter??undefined,
+			});
 		if (!state.doc.source_doctype) { return; }
 		state.data = list;
 		// 赋值给chart.data
@@ -95,12 +104,15 @@ function getChart(chartName:string, mode:string|null):ChartProvide {
 	}
 
 
-	async function asyncUpdateQuery(doctype:string) {
+	async function asyncUpdateQuery(doctype:string, filter?:any) {
 		if (!doctype) { return; }
-		if (state.doc.source_doctype === doctype) { return; }
+		if (state.doc.source_doctype === doctype&&filter===state.doc.filter) { return; }
 		state.doc.source_doctype = doctype;
+		state.doc.filter = filter||[];
+		const filterJson = frappe.utils.get_filter_as_json(filter||[]);
 		await frappe.db.set_value(blockType, chartName, {
 			source_doctype:doctype,
+			filter:filterJson,
 		});
 		updateChartData();
 	}

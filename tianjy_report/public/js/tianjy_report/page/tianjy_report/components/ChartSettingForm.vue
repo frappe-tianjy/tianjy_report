@@ -4,6 +4,7 @@
 			class="form"
 			ref="formRef"
 			:model="form"
+			@submit.prevent
 			:rules="rules">
 			<el-form-item label="标题" prop="title">
 				<el-input v-model="form.title" @change="changeTitle" />
@@ -38,6 +39,10 @@
 					</ElOption>
 				</ElSelect>
 			</el-form-item>
+			<el-form-item label="过滤器" prop="filter">
+				<Filter v-model="form.filter" :options="form.doctype"
+					@change="changeFilter"></Filter>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="danger" @click="onDelete">删除</el-button>
 			</el-form-item>
@@ -46,13 +51,14 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, defineProps, defineEmits, reactive, watch, inject } from 'vue';
+import { ref, defineProps, defineEmits, reactive, watch, inject, Ref } from 'vue';
 
 import type { FormInstance, FormRules } from 'element-plus';
 
 import { ChartOptions, ChartProvide } from '../../type';
 
 import DocSelect from './DocSelect.vue';
+import Filter from './Filter.vue';
 const notValueField = ['HTML Editor', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor', 'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Connection Table'];
 
 const formRef = ref<FormInstance>();
@@ -67,16 +73,18 @@ interface Emit{
 const emit = defineEmits<Emit>();
 const chart = inject<ChartProvide>('chart');
 const form = reactive({
-  title: chart?.doc.options.title,
+  title: chart?.doc.options?.title,
   doctype: chart?.doc.source_doctype||'',
   chartType:chart?.doc.type||'',
   xAxis:chart?.doc.options?.xAxis?.fieldname,
   yAxis:chart?.doc.options?.yAxis?.fieldname,
+  filter:chart?.doc.filter,
 });
+
 watch(()=>chart?.doc.options, ()=>{
-	form.title = chart?.doc.options.title;
-	form.xAxis = chart?.doc.options.xAxis?.fieldname;
-	form.yAxis = chart?.doc.options.yAxis?.fieldname;
+	form.title = chart?.doc.options?.title;
+	form.xAxis = chart?.doc.options?.xAxis?.fieldname;
+	form.yAxis = chart?.doc.options?.yAxis?.fieldname;
 });
 watch(()=>chart?.doc.type, ()=>{
 	form.chartType = chart?.doc.type||'';
@@ -84,7 +92,9 @@ watch(()=>chart?.doc.type, ()=>{
 watch(()=>chart?.doc.source_doctype, ()=>{
 	form.doctype = chart?.doc.source_doctype||'';
 });
-
+watch(()=>chart?.doc.filter, ()=>{
+	form.filter = chart?.doc.filter;
+});
 const rules = reactive<FormRules>({
 	doctype: [
     {
@@ -150,6 +160,9 @@ function changeY(v:string){
 	if (!chart){ return; }
 	const yAxis = fields.value.find(item=>item.fieldname === form.yAxis);
 	chart.doc.options.yAxis = {label:yAxis?.label, fieldname:yAxis?.fieldname};
+}
+function changeFilter(v:any){
+	chart?.updateQuery(form.doctype, v);
 }
 function onDelete(){
 	chart?.delete();

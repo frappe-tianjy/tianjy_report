@@ -6,7 +6,7 @@
 			:is="widgets.getComponent(chart?.doc?.type)"
 			:data="chart.data"
 			:options="chart.doc.options"
-			:key="JSON.stringify([chart?.doc?.data])">
+			:key="JSON.stringify([chart?.data])">
 			<template #placeholder>
 				<div class="relative h-full w-full">
 					配置不正确的组件
