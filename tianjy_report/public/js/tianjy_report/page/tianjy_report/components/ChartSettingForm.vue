@@ -137,9 +137,7 @@ watch(()=>form.doctype, async ()=>{
 
 function changeTitle(value:string){
 	if (!chart){ return; }
-	chart.doc.options = {
-		title:value,
-	};
+	chart.doc.options.title =value;
 }
 function changeDoctype(v:string){
 	if (!chart){ return; }
