@@ -8,6 +8,7 @@ import {
 	LineChart,
 	ParkingSquare,
 	Table,
+	Image,
 } from 'lucide-vue-next';
 import { VueRenderer } from '@tiptap/vue-3';
 import tippy from 'tippy.js';
@@ -123,6 +124,28 @@ export default {
 				editor.chain().focus().deleteRange(range)
 					.insertContent(element)
 					.run();
+			},
+			disabled: editor => !editor.isActive('paragraph') || editor.isActive('table'),
+		},
+		{
+			title: 'Image',
+			icon: markRaw(Image),
+			command: ({ editor, range }) => {
+				const input = document.createElement('input');
+				input.setAttribute('type', 'file');
+				input.setAttribute('accept', 'image/*');
+				input.addEventListener('change', e => {
+					if (!e.target.files || e.target.files?.length === 0) { return; }
+					const file = e.target.files[0];
+					const reader = new FileReader();
+					reader.readAsDataURL(file);
+					reader.onload = function () {
+						const url = reader.result;
+						editor.chain().focus().setImage({ src: url })
+							.run();
+					};
+				});
+				input.click();
 			},
 			disabled: editor => !editor.isActive('paragraph') || editor.isActive('table'),
 		},

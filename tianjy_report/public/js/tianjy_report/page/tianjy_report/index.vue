@@ -38,6 +38,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Gapcursor from '@tiptap/extension-gapcursor';
 import Document from '@tiptap/extension-document';
 import Heading from '@tiptap/extension-heading';
+import Image from '@tiptap/extension-image';
 
 import SlashCommand from '../command/commands';
 import suggestion from '../command/suggestion';
@@ -92,6 +93,10 @@ const editor = useEditor({
 				},
 			}),
 			BubbleMenu,
+			Image.configure({
+				inline: true,
+				allowBase64: true,
+			}),
 		],
 	});
 
