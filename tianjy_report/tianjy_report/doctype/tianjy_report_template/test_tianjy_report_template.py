@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestTianjyReportPersistent(FrappeTestCase):
+class TestTianjyReportTemplate(FrappeTestCase):
 	pass

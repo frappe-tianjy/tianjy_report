@@ -2,36 +2,119 @@
  "actions": [],
  "creation": "2023-05-15 17:11:27.507478",
  "default_view": "List",
+ "description": "\u5929\u7391\u62a5\u544a",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "label",
-  "layouts",
-  "sources"
+  "report_template",
+  "category",
+  "column_break_qts5b",
+  "start_date",
+  "end_date",
+  "column_break_dmbpv",
+  "subject",
+  "is_persistence",
+  "section_break_7hrhi",
+  "layout",
+  "section_break_y7phq",
+  "blocks_tab",
+  "blocks"
  ],
  "fields": [
   {
-   "fieldname": "label",
+   "fieldname": "report_template",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Tianjy Report Template",
+   "options": "Tianjy Report Template",
+   "reqd": 1
+  },
+  {
+   "fieldname": "subject",
    "fieldtype": "Data",
-   "label": "Label",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Subject",
+   "reqd": 1,
    "translatable": 1
   },
   {
-   "fieldname": "sources",
-   "fieldtype": "Table",
-   "label": "Sources",
-   "options": "Tianjy Report Source"
+   "fieldname": "layout",
+   "fieldtype": "JSON",
+   "label": "Layout",
+   "read_only": 1
   },
   {
-   "fieldname": "layouts",
-   "fieldtype": "JSON",
-   "label": "\u5e03\u5c40"
+   "default": "0",
+   "fieldname": "is_persistence",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Persistence",
+   "read_only": 1
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "End Date"
+  },
+  {
+   "fieldname": "blocks",
+   "fieldtype": "Connection Table",
+   "label": "Blocks",
+   "options": "Tianjy Report Block"
+  },
+  {
+   "dynamic_relation": 1,
+   "fetch_from": "report_template.category",
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Tianjy Report Category",
+   "options": "Tianjy Report Category",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_qts5b",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_dmbpv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_7hrhi",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_y7phq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "blocks_tab",
+   "fieldtype": "Tab Break",
+   "label": "Blocks"
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2023-05-20 16:44:51.651354",
+ "links": [
+  {
+   "link_doctype": "Tianjy Report Block",
+   "link_fieldname": "report"
+  }
+ ],
+ "modified": "2023-05-24 13:56:44.579689",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report",
@@ -54,6 +137,5 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "label",
- "translated_doctype": 1
+ "title_field": "subject"
 }

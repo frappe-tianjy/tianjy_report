@@ -1,0 +1,117 @@
+{
+ "actions": [],
+ "creation": "2023-05-24 11:21:53.678468",
+ "default_view": "Main",
+ "description": "\u5929\u7391\u62a5\u544a\u6a21\u7248",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "category",
+  "column_break_nqlop",
+  "subject",
+  "section_break_rhgzn",
+  "remark",
+  "layout",
+  "blocks_tab",
+  "blocks",
+  "tianjy_report_tab",
+  "reports"
+ ],
+ "fields": [
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Subject",
+   "reqd": 1
+  },
+  {
+   "fieldname": "blocks",
+   "fieldtype": "Connection Table",
+   "label": "Blocks",
+   "options": "Tianjy Report Template Block"
+  },
+  {
+   "fieldname": "layout",
+   "fieldtype": "JSON",
+   "label": "Layout",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Long Text",
+   "label": "Remark"
+  },
+  {
+   "fieldname": "reports",
+   "fieldtype": "Connection Table",
+   "label": "Tianjy Report",
+   "options": "Tianjy Report"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": " Tianjy Report Category",
+   "options": "Tianjy Report Category",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_nqlop",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_rhgzn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "blocks_tab",
+   "fieldtype": "Tab Break",
+   "label": "Blocks"
+  },
+  {
+   "fieldname": "tianjy_report_tab",
+   "fieldtype": "Tab Break",
+   "label": "Tianjy Report"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "Tianjy Report Template Block",
+   "link_fieldname": "report_template"
+  },
+  {
+   "link_doctype": "Tianjy Report",
+   "link_fieldname": "report_template"
+  }
+ ],
+ "modified": "2023-05-24 13:56:54.855384",
+ "modified_by": "Administrator",
+ "module": "Tianjy Report",
+ "name": "Tianjy Report Template",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "subject",
+ "track_changes": 1
+}

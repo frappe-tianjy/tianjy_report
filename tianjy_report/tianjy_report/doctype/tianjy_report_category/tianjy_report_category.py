@@ -4,5 +4,5 @@
 # import frappe
 from frappe.model.document import Document
 
-class TianjyReportSource(Document):
+class TianjyReportCategory(Document):
 	pass

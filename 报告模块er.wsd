@@ -1,0 +1,52 @@
+@startuml
+
+entity 报告类别 {
+  Data  名称
+  Text  备注
+}
+
+entity 报告模版 {
+  Link    报告类别
+  Data    主题
+  Json    模版
+  ConnectionTable 报告
+}
+
+entity 报告模版块 {
+  link    报告模块
+  Select  块类型
+  Link    数据源单据
+  Json    过滤条件
+  Json    配置
+}
+
+entity 报告 {
+  link    报告模块
+  Data    主题
+  Date    开始日期
+  Date    结束日期
+  Json    内容
+  Boolean 数据源持久化
+}
+
+entity 报告块 {
+  Link    报告
+  Link    报告模版块
+  Select  类型
+  Link    单据
+  Json    过滤条件
+  Json    配置
+  Json    持久化数据源
+}
+
+报告类别 --> 报告模版
+
+报告模版 --> 报告
+
+报告模版 --> 报告模版块
+
+报告 --> 报告块
+
+' /app/tianjy-report-page?mode=:value&name=:name
+' mode: ['template','report']
+@enduml
