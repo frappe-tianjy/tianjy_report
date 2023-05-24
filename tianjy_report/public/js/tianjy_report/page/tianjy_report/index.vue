@@ -4,13 +4,31 @@
 	</div>
 	<div class="container">
 		<editor-content :editor="editor" class="editor" />
+		<bubble-menu
+			:editor="editor"
+			:tippy-options="{ duration: 100 }"
+			v-if="editor">
+			<ElButton type="default"
+				@click="editor.chain().focus().toggleBold().run()"
+				:class="{ 'is-active': editor.isActive('bold') }">
+				bold
+			</ElButton>
+			<ElButton @click="editor.chain().focus().toggleItalic().run()"
+				:class="{ 'is-active': editor.isActive('italic') }">
+				italic
+			</ElButton>
+			<ElButton @click="editor.chain().focus().toggleStrike().run()"
+				:class="{ 'is-active': editor.isActive('strike') }">
+				strike
+			</ElButton>
+		</bubble-menu>
 	</div>
 </template>
 
 <script setup lang='ts'>
 import { ref, defineProps, defineEmits, onMounted, watch, computed } from 'vue';
 
-import { useEditor, EditorContent } from '@tiptap/vue-3';
+import { useEditor, EditorContent, BubbleMenu } from '@tiptap/vue-3';
 import Table from '@tiptap/extension-table';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
@@ -73,6 +91,7 @@ const editor = useEditor({
 					return 'Type / to insert a block';
 				},
 			}),
+			BubbleMenu,
 		],
 	});
 

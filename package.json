@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tiptap/extension-bubble-menu": "^2.0.3",
     "@tiptap/extension-gapcursor": "^2.0.3",
     "@tiptap/extension-heading": "^2.0.3",
     "@tiptap/extension-placeholder": "^2.0.3",
