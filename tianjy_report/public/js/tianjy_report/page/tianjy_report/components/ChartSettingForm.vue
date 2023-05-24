@@ -132,7 +132,7 @@ watch(()=>form.doctype, async ()=>{
 	if (!form.doctype){ fields.value=[]; return; }
 	await new Promise(r => frappe.model.with_doctype(form.doctype, r));
 	const f = frappe.get_doc('DocType', form.doctype)?.fields || [];
-	fields.value = f.filter(item=>!notValueField.includes(item.doctype));
+	fields.value = f.filter(item=>!notValueField.includes(item.fieldtype));
 }, {immediate:true});
 
 function changeTitle(value:string){

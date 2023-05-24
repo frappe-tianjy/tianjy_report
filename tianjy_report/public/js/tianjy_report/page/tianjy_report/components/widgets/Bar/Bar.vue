@@ -17,7 +17,7 @@ let chart:any = null;
 
 const formatOptions = computed(()=>{
 	const xAxisF = props.options.xAxis?.fieldname;
-	const xAxisData = (props.data||[])?.map(item=>item[xAxisF]);
+	const xAxisData = (props.data||[])?.map(item=>__(item[xAxisF]));
 	const xAxis = {
                     'type': 'category',
                     'data': xAxisData,
