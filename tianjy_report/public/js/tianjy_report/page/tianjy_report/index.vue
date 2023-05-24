@@ -86,7 +86,7 @@ const editor = useEditor({
 			Placeholder.configure({
 				placeholder: ({ node }) => {
 					if (node.type.name === 'heading') {
-						return `Heading ${node.attrs.level}`;
+						return `Heading ${node.attrs.level-1}`;
 					}
 					return 'Type / to insert a block';
 				},
