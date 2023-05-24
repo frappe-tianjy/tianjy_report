@@ -1,4 +1,7 @@
 <template>
+	<div class="title container">
+		<h3>{{ subject }}</h3>
+	</div>
 	<div class="container">
 		<editor-content :editor="editor" class="editor" />
 	</div>
@@ -35,6 +38,8 @@ const searchParams = new URLSearchParams(location.search);
 const reportName = searchParams.get('name');
 const mode = searchParams.get('mode');
 const content = ref<Record<string, any>>({});
+const subject = ref<string>('');
+
 const reportType =computed(()=>mode==='template'?'Tianjy Report Template':'Tianjy Report');
 
 function saveLayout(json:any){
@@ -73,8 +78,9 @@ const editor = useEditor({
 
 watch([()=>reportName, ()=>mode], async()=>{
 	if (!reportName){ return; }
-	const res:{layout?:string} = await frappe.db.get_doc(reportType.value, reportName );
+	const res:{layout?:string, subject:string} = await frappe.db.get_doc(reportType.value, reportName );
 	content.value = JSON.parse(res.layout||'{}');
+	subject.value = res.subject;
 }, {immediate:true});
 
 watch([content, editor], ()=>{
@@ -84,6 +90,14 @@ watch([content, editor], ()=>{
 </script>
 
 <style lang='less' scoped>
+.title {
+	height: 75px;
+	height: 75px;
+	display: flex;
+	align-items: center;
+	line-height: 75px;
+}
+
 .container {
 	width: 50rem;
 	margin: 0 auto;
