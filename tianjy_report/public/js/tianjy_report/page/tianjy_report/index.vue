@@ -2,7 +2,7 @@
 	<div class="title container">
 		<h3>{{ subject }}</h3>
 	</div>
-	<div class="container">
+	<div class="container editor-container">
 		<editor-content :editor="editor" class="editor" />
 		<bubble-menu
 			:editor="editor"
@@ -39,6 +39,9 @@ import Gapcursor from '@tiptap/extension-gapcursor';
 import Document from '@tiptap/extension-document';
 import Heading from '@tiptap/extension-heading';
 import Image from '@tiptap/extension-image';
+import BulletList from '@tiptap/extension-bullet-list';
+import ListItem from '@tiptap/extension-list-item';
+import OrderedList from '@tiptap/extension-ordered-list';
 
 import SlashCommand from '../command/commands';
 import suggestion from '../command/suggestion';
@@ -97,6 +100,9 @@ const editor = useEditor({
 				inline: true,
 				allowBase64: true,
 			}),
+			BulletList,
+			OrderedList,
+			ListItem,
 		],
 	});
 
@@ -125,6 +131,11 @@ watch([content, editor], ()=>{
 .container {
 	width: 50rem;
 	margin: 0 auto;
+}
+
+.editor-container {
+	height: calc(100vh - 135px);
+	overflow: auto;
 }
 
 :deep(.ProseMirror) {
