@@ -19,7 +19,7 @@
 				</ElSelect>
 			</el-form-item>
 			<el-form-item label="Y 轴" prop="yAxis">
-				<ElSelect v-model="form.yAxis" :teleported="false"
+				<ElSelect v-model="form.yAxis" :teleported="false" multiple
 					@change="changeY">
 					<ElOption v-for="f in fields"
 						:value="f.fieldname"
@@ -54,13 +54,13 @@ const doctype = computed(()=>chart?.doc.source_doctype);
 const form = reactive({
   title: chart?.doc.options?.title,
   xAxis:chart?.doc.options?.xAxis?.fieldname,
-  yAxis:chart?.doc.options?.yAxis?.fieldname,
+  yAxis:chart?.doc.options?.yAxis?.map(item=>item.fieldname),
 });
 
 watch(()=>chart?.doc.options, ()=>{
 	form.title = chart?.doc.options?.title;
 	form.xAxis = chart?.doc.options?.xAxis?.fieldname;
-	form.yAxis = chart?.doc.options?.yAxis?.fieldname;
+	form.yAxis = chart?.doc.options?.yAxis?.map(item=>item.fieldname);
 });
 
 const rules = reactive<FormRules>({
@@ -99,10 +99,10 @@ function changeX(v:string){
 	const xAxis = fields.value.find(item=>item.fieldname === form.xAxis);
 	chart.doc.options.xAxis = {label:xAxis?.label, fieldname:xAxis?.fieldname, fieldtype:xAxis?.fieldtype};
 }
-function changeY(v:string){
+function changeY(v:string[]){
 	if (!chart){ return; }
-	const yAxis = fields.value.find(item=>item.fieldname === form.yAxis);
-	chart.doc.options.yAxis = {label:yAxis?.label, fieldname:yAxis?.fieldname, fieldtype:yAxis?.fieldtype};
+	const yAxisArr = fields.value.filter(item=>v.includes(item.fieldname));
+	chart.doc.options.yAxis = yAxisArr.map(item=>({label:item?.label, fieldname:item?.fieldname, fieldtype:item?.fieldtype}));
 }
 
 </script>

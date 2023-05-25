@@ -27,26 +27,32 @@ const formatOptions = computed(()=>{
                     'data': xAxisData,
                 };
 	const yAxisArr = props.options.yAxis||[];
+	const yLabel = yAxisArr.length===1?yAxisArr[0]?.label:'';
 	const yAxis = {
 		'type': 'value',
-		'name': __(props.options.yAxis?.label||'y轴'),
+		'name': __(yLabel||'值'),
 	};
 	const series = yAxisArr.map(yAxisF=>{
 		const data=(props.data||[]).map(item=>item[yAxisF.fieldname]);
 		return {
 			data,
 			'type': 'line',
+			name:__(yAxisF.label),
 			label:{
 				show:true,
 				position: 'top',
 			},
 		};
 	});
+	const legend = {
+		data:yAxisArr.map(item=>__(item.label)),
+	};
 	if (!props.data||xAxisData.length===0){ return {}; }
 	const formatOptions={
 		title: {
 			text: props.options.title,
 		},
+		legend,
 		color:['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
 		toolbox: {
 				show: true,
