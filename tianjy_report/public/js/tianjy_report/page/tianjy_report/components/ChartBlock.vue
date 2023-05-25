@@ -19,7 +19,10 @@
 			class="placeholder">
 			<div class="mb-1 w-[10rem] text-gray-400">请配置图表</div>
 		</div>
-		<BlockActions :blockRef="blockRef" ref="actionsRef">
+	</div>
+	<div>
+		<BlockActions :editable="nodeViewProps.editor.isEditable"
+			:blockRef="blockRef" ref="actionsRef">
 			<ChartSettingForm @remove="emit('remove')"></ChartSettingForm>
 		</BlockActions>
 	</div>
@@ -39,6 +42,7 @@ import ChartSettingForm from './ChartSettingForm.vue';
 const emit = defineEmits(['setChartName', 'remove']);
 interface Props{
 	chartName?: string
+	nodeViewProps:any
 }
 const props = defineProps<Props>();
 
