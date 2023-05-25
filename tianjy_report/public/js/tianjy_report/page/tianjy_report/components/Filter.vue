@@ -39,7 +39,6 @@ watch([()=>props.options, ()=>props.modelValue], ()=>{
 	if (!props.options){ return; }
 	if (!filterIns.value||filterIns.value.doctype!==props.options){
 		createFilterCom();
-		return;
 	}
 	let filter = props.modelValue;
 	if (typeof props.modelValue === 'string'){

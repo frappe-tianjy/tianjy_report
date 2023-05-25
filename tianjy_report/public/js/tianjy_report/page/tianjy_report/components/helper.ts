@@ -71,7 +71,14 @@ function getChart(chartName:string, mode:string|null):ChartProvide {
 			block.options = {};
 		}
 		state.doc = block;
-		state.doc.filter = safeJSONParse(block.filter);
+		let {filter} = block;
+		if (typeof block.filter === 'string'){
+			filter = frappe.utils.get_filter_from_json(
+				block.filter,
+				state.doc.source_doctype
+			);
+		}
+		state.doc.filter = filter;
 		if (!state.doc.source_doctype) {
 			state.loading = false;
 			return;
