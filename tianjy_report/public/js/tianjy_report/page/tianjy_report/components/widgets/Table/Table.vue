@@ -1,5 +1,6 @@
 <template>
 	<div class="table-container">
+		<h4 class="title">{{ props.options.title }}</h4>
 		<el-table :data="tableData" style="width: 100%" height="100%">
 			<el-table-column
 				v-for="(col, index) in columns"
@@ -40,5 +41,9 @@ const tableData = computed(()=>props.data.map(item=>{
 	border: 1px solid #e2e8f0;
 	border-radius: 0.25rem;
 	margin: 1.5rem 0;
+}
+
+.title {
+	padding: 4px 8px;
 }
 </style>

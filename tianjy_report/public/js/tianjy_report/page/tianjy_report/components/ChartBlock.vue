@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, provide, ref, unref, watch, defineProps } from 'vue';
+import { computed, inject, provide, ref, unref, watch, defineProps, reactive } from 'vue';
 
 import { ClickOutside as vClickOutside } from 'element-plus';
 
@@ -48,26 +48,41 @@ const searchParams = new URLSearchParams(location.search);
 const reportName = searchParams.get('name');
 const mode = searchParams.get('mode');
 
-const chart=ref<ChartProvide|null>(null);
+const chart=reactive<ChartProvide>({
+	data: [],
+	columns: [],
+	loading: true,
+	options: {},
+	autosave: false,
+	deleting:false,
+	doc: {
+		name: undefined,
+		type: undefined,
+		options: {},
+		filter:undefined,
+		source_doctype:undefined,
+	},
+});
 
-provide('chart', chart.value);
-
+provide('chart', chart);
 function onClickOutside () {
 	actionsRef.value?.popoverRef?.delayHide?.();
 }
 
-const type=computed(()=>chart.value?.doc?.type);
-const source_doctype=computed(()=>chart.value?.doc?.source_doctype);
+const type=computed(()=>chart?.doc?.type);
+const source_doctype=computed(()=>chart?.doc?.source_doctype);
 function getTimeout(infoEntry: IntersectionObserverEntry) {
     setTimeout(async () => {
 		if (!props.chartName) {
 			const chartName = await createChart(reportName||'', mode);
 			emit('setChartName', chartName);
-			chart.value = useChart(chartName, mode);
+			const getChart = useChart(chart, chartName, mode);
+			Object.assign(chart, getChart);
 		} else {
-			chart.value = useChart(props.chartName, mode);
+			const getChart = useChart(chart, props.chartName, mode);
+			Object.assign(chart, getChart);
 		}
-		chart.value?.enableAutoSave();
+		chart?.enableAutoSave?.();
     }, 500);
 }
 
