@@ -1,12 +1,12 @@
 <template>
-	<div v-loading="chart.loading" class="chart-container" ref="blockRef"
+	<div v-loading="chart?.loading" class="chart-container" ref="blockRef"
 		v-click-outside="onClickOutside">
 		<component
-			v-if="chart?.doc?.type&&chart?.doc?.source_doctype"
+			v-if="type&&source_doctype"
 			ref="widget"
 			:is="widgets.getComponent(chart?.doc?.type)"
-			:data="chart.data"
-			:options="chart.doc.options"
+			:data="chart?.data"
+			:options="chart?.doc.options"
 			:key="JSON.stringify([chart?.data])">
 			<template #placeholder>
 				<div class="relative h-full w-full">
@@ -48,20 +48,49 @@ const searchParams = new URLSearchParams(location.search);
 const reportName = searchParams.get('name');
 const mode = searchParams.get('mode');
 
-let chart:ChartProvide|null = null;
-if (!props.chartName) {
-	const chartName = await createChart(reportName||'', mode);
-	emit('setChartName', chartName);
-	chart = useChart(chartName, mode);
-} else {
-	chart = useChart(props.chartName, mode);
-}
-chart?.enableAutoSave();
-provide('chart', chart);
+const chart=ref<ChartProvide|null>(null);
+
+provide('chart', chart.value);
 
 function onClickOutside () {
 	actionsRef.value?.popoverRef?.delayHide?.();
 }
+
+const type=computed(()=>chart.value?.doc?.type);
+const source_doctype=computed(()=>chart.value?.doc?.source_doctype);
+function getTimeout(infoEntry: IntersectionObserverEntry) {
+    setTimeout(async () => {
+		if (!props.chartName) {
+			const chartName = await createChart(reportName||'', mode);
+			emit('setChartName', chartName);
+			chart.value = useChart(chartName, mode);
+		} else {
+			chart.value = useChart(props.chartName, mode);
+		}
+		chart.value?.enableAutoSave();
+    }, 500);
+}
+
+function observerCallback(entries: IntersectionObserverEntry[]) {
+      entries.reverse().forEach(entry => {
+        if (entry.isIntersecting) {
+          location.hash=`#${entry.target.id}`;
+          getTimeout(entry);
+        } else {
+        }
+      });
+}
+
+const observer = new IntersectionObserver(observerCallback, {
+      threshold: 0.1,
+      root: document.body,
+});
+
+watch(blockRef, ()=>{
+	if (!blockRef.value){ return; }
+	observer.observe(blockRef.value);
+}, {deep:true});
+
 </script>
 <style scoped lang="less">
 .placeholder {
