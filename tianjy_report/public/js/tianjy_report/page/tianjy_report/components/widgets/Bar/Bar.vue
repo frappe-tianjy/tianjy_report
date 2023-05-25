@@ -17,7 +17,10 @@ let chart:any = null;
 
 const formatOptions = computed(()=>{
 	const xAxisF = props.options.xAxis?.fieldname;
-	const xAxisData = (props.data||[])?.map(item=>__(item[xAxisF]));
+	const xAxisData = (props.data||[])?.map(item=>{
+		const isLink = props.options.xAxis?.fieldtype === 'Link'||props.options.xAxis?.fieldtype === 'Tree Select';
+		return isLink?__(item[`${xAxisF}.title`]):__(item[xAxisF]);
+	});
 	const xAxis = {
                     'type': 'category',
 					'name': __(props.options.xAxis?.label||'x轴'),
@@ -41,6 +44,7 @@ const formatOptions = computed(()=>{
 		title: {
 			text: props.options.title,
 		},
+		color:['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
 		type:'Bar',
 		toolbox: {
 			show: true,

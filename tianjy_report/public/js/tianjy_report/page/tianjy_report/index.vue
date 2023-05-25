@@ -83,6 +83,9 @@ const editor = useEditor({
 			Gapcursor,
 			Table.configure({
 				resizable: true,
+				HTMLAttributes: {
+					class: 'tiptap-table',
+				},
 			}),
 			TableRow,
 			TableHeader,
@@ -181,7 +184,7 @@ watch([content, editor], ()=>{
 	height: 0;
 }
 
-:deep(.ProseMirror) {
+:deep(.ProseMirror .tableWrapper) {
 	table {
 		border-collapse: collapse;
 		table-layout: fixed;

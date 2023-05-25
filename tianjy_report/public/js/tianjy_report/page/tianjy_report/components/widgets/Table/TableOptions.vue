@@ -1,46 +1,94 @@
-<script setup>
-import Checkbox from '@/components/Controls/Checkbox.vue'
-import ListPicker from '@/components/Controls/ListPicker.vue'
-import { computed } from 'vue'
-
-const emit = defineEmits(['update:modelValue'])
-const props = defineProps({
-	modelValue: { type: Object, required: true },
-	columns: { type: Array, required: true },
-})
-
-const options = computed({
-	get: () => props.modelValue,
-	set: (value) => emit('update:modelValue', value),
-})
-
-const columnOptions = computed(() => {
-	return props.columns?.map((column) => ({
-		label: column.label,
-		value: column.label,
-		description: column.type,
-	}))
-})
-</script>
-
 <template>
-	<div class="space-y-4">
-		<Input
-			type="text"
-			label="Title"
-			class="w-full"
-			v-model="options.title"
-			placeholder="Title"
-		/>
-		<div>
-			<span class="mb-2 block text-sm leading-4 text-gray-700">Columns</span>
-			<ListPicker
-				:options="columnOptions"
-				:value="options.columns"
-				@change="options.columns = $event.map((item) => item.value)"
-			/>
-		</div>
-		<Checkbox v-model="options.index" label="Show Index" />
-		<Checkbox v-model="options.showTotal" label="Show Total" />
+	<div>
+		<el-form
+			class="form"
+			ref="formRef"
+			:model="form"
+			@submit.prevent
+			:rules="rules">
+			<el-form-item label="标题" prop="title">
+				<el-input v-model="form.title" @change="changeTitle" />
+			</el-form-item>
+			<el-form-item label="列" prop="columns">
+				<ElSelect v-model="form.columns" :teleported="false" multiple
+					@change="changeColumns">
+					<ElOption v-for="f in fields"
+						:value="f.fieldname"
+						:label="tt(f.label)">
+					</ElOption>
+				</ElSelect>
+			</el-form-item>
+		</el-form>
 	</div>
 </template>
+
+<script setup lang='ts'>
+import { ref, defineProps, defineEmits, reactive, watch, inject, Ref, computed } from 'vue';
+
+import type { FormInstance, FormRules } from 'element-plus';
+
+import { ChartOptions, ChartProvide } from '../../../../type';
+const notValueField = ['HTML Editor', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor', 'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Connection Table'];
+
+const formRef = ref<FormInstance>();
+const tt=__;
+interface Props{
+
+}
+const props = defineProps<Props>();
+interface Emit{
+	(event: 'remove'): void;
+}
+const emit = defineEmits<Emit>();
+const chart = inject<ChartProvide>('chart');
+const doctype = computed(()=>chart?.doc.source_doctype);
+const form = reactive({
+  title: chart?.doc.options?.title,
+  columns:chart?.doc.options?.columns?.map((item:any)=>item.fieldname),
+});
+
+watch(()=>chart?.doc.options, ()=>{
+	form.title = chart?.doc.options?.title;
+	form.columns = chart?.doc.options?.columns?.fieldname;
+});
+
+const rules = reactive<FormRules>({
+  columns: [
+    {
+      required: true,
+      message: '请选择列字段',
+      trigger: 'change',
+    },
+  ],
+});
+const fields = ref<locals.DocField[]>([]);
+
+watch(doctype, async ()=>{
+	if (!doctype.value){ fields.value=[]; return; }
+	await new Promise(r => frappe.model.with_doctype(doctype.value!, r));
+	const f = frappe.get_doc('DocType', doctype.value)?.fields || [];
+	fields.value = f.filter(item=>!notValueField.includes(item.fieldtype));
+}, {immediate:true});
+
+function changeTitle(value:string){
+	if (!chart){ return; }
+	chart.doc.options.title =value;
+}
+
+function changeColumns(v:string){
+	if (!chart){ return; }
+	const columns = fields.value.map(item=>{
+		if (form.columns.includes(item.fieldname)){
+			return {label:item.label, fieldname:item?.fieldname, fieldtype: item.fieldtype};
+		}
+	}).filter(Boolean);
+	chart.doc.options.columns = columns;
+}
+
+</script>
+
+<style lang='less' scoped>
+:deep(.form label) {
+	margin-bottom: 0;
+}
+</style>

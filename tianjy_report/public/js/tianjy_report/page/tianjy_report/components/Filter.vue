@@ -51,7 +51,7 @@ watch([()=>props.options, ()=>props.modelValue], ()=>{
 		filterIns.value.clear_filters();
 		filterIns.value.add_filters_to_filter_group(filter);
 	});
-});
+}, {immediate:true});
 
 function change(v:any){
 	emit('change', v);

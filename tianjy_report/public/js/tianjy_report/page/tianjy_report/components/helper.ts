@@ -21,6 +21,18 @@ function safeJSONParse(str:string, defaultValue = null) {
 		return defaultValue;
 	}
 }
+export async function loadLinkDocTypes(meta: locals.DocType) {
+	const linkDocTypes = meta.fields
+		.map(df => df.fieldtype === 'Link'||df.fieldtype==='Tree Select' ? df.options as string : '')
+		.filter(Boolean);
+
+	await Promise.all(
+		[...new Set(linkDocTypes)].map(doctype => new Promise<void>(resolve => {
+			frappe.model.with_doctype(doctype, () => { resolve(); });
+		}))
+	);
+
+}
 
 const charts:Record<string, any> = {};
 
@@ -94,8 +106,9 @@ function getChart(chartName:string, mode:string|null):ChartProvide {
 			if (!state.doc.source_doctype){ return; }
 			const meta = frappe.get_meta(state.doc.source_doctype);
 			if (!meta){ return; }
-			const notValueField = ['HTML Editor', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor', 'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Connection Table'];
-
+			const notValueField = ['HTML Editor', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor',
+			'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Button', 'Fold', 'Connection Table', 'Table', 'Table MultiSelect' ];
+			await loadLinkDocTypes(meta);
 			const fields:[string, string][] = meta.fields
 				.filter(f=>!notValueField.includes(f.fieldtype)).map(f=>[f.fieldname, meta.name]);
 			const list = await requestDocList(meta, state.doc.filter??undefined, {

@@ -1,75 +1,78 @@
 {
-   "actions": [],
-   "creation": "2023-05-24 13:07:53.563267",
-   "default_view": "List",
-   "doctype": "DocType",
-   "editable_grid": 1,
-   "engine": "InnoDB",
-   "field_order": [
-      "report_template",
-      "type",
-      "source_doctype",
-      "filter",
-      "options"
-   ],
-   "fields": [
-      {
-         "fieldname": "type",
-         "fieldtype": "Select",
-         "in_list_view": 1,
-         "label": "Type",
-         "options": "Table\nBar"
-      },
-      {
-         "fieldname": "filter",
-         "fieldtype": "JSON",
-         "label": "Fitler",
-         "read_only": 1
-      },
-      {
-         "fieldname": "options",
-         "fieldtype": "JSON",
-         "label": "Options",
-         "read_only": 1
-      },
-      {
-         "fieldname": "report_template",
-         "fieldtype": "Link",
-         "in_list_view": 1,
-         "label": "Tianjy Report Template",
-         "options": "Tianjy Report Template",
-         "reqd": 1
-      },
-      {
-         "fieldname": "source_doctype",
-         "fieldtype": "Link",
-         "in_list_view": 1,
-         "label": "Source DocType",
-         "options": "DocType"
-      }
-   ],
-   "index_web_pages_for_search": 1,
-   "links": [],
-   "modified": "2023-05-24 15:17:08.632994",
-   "modified_by": "Administrator",
-   "module": "Tianjy Report",
-   "name": "Tianjy Report Template Block",
-   "owner": "Administrator",
-   "permissions": [
-      {
-         "create": 1,
-         "delete": 1,
-         "email": 1,
-         "export": 1,
-         "print": 1,
-         "read": 1,
-         "report": 1,
-         "role": "System Manager",
-         "share": 1,
-         "write": 1
-      }
-   ],
-   "sort_field": "modified",
-   "sort_order": "DESC",
-   "states": []
+ "actions": [],
+ "creation": "2023-05-24 13:07:53.563267",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "report_template",
+  "type",
+  "source_doctype",
+  "filter",
+  "options"
+ ],
+ "fields": [
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "Table\nBar\nPie\nLine",
+   "read_only": 1
+  },
+  {
+   "fieldname": "filter",
+   "fieldtype": "JSON",
+   "label": "Fitler",
+   "read_only": 1
+  },
+  {
+   "fieldname": "options",
+   "fieldtype": "JSON",
+   "label": "Options",
+   "read_only": 1
+  },
+  {
+   "fieldname": "report_template",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Tianjy Report Template",
+   "options": "Tianjy Report Template",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "source_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Source DocType",
+   "options": "DocType",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-05-25 15:42:13.268925",
+ "modified_by": "Administrator",
+ "module": "Tianjy Report",
+ "name": "Tianjy Report Template Block",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
 }
