@@ -17,20 +17,60 @@ let chart:any = null;
 
 const formatOptions = computed(()=>{
 	const xAxisF = props.options.xAxis?.fieldname;
-	const xAxisData = (props.data||[])?.map(item=>item[xAxisF]);
+	const xAxisData = (props.data||[])?.map(item=>{
+		const isLink = props.options.xAxis?.fieldtype === 'Link'||props.options.xAxis?.fieldtype === 'Tree Select';
+		return isLink?__(item[`${xAxisF}.title`]):__(item[xAxisF]);
+	});
 	const xAxis = {
                     'type': 'category',
+					'name': __(props.options.xAxis?.label||'x轴'),
                     'data': xAxisData,
                 };
-	const yAxisF = props.options.yAxis?.fieldname;
-	const yAxis = {'type': 'value'};
-	const series = [{
-		data:(props.data||[])?.map(item=>item[yAxisF]),
-		'type': 'bar',
-	}];
+	const yAxisArr = props.options.yAxis||[];
+	const yLabel = yAxisArr.length===1?yAxisArr[0]?.label:'';
+	const yAxis = {
+		'type': 'value',
+		'name': __(yLabel||'值'),
+	};
+	const series = yAxisArr.map(yAxisF=>{
+		const data=(props.data||[]).map(item=>item[yAxisF.fieldname]);
+		return {
+			data,
+			'type': 'bar',
+			name:__(yAxisF.label),
+			label:{
+				show:true,
+				position: 'top',
+			},
+		};
+	});
+	const legend = {
+		data:yAxisArr.map(item=>__(item.label)),
+	};
 	if (!props.data||xAxisData.length===0){ return {}; }
 	const formatOptions={
+		title: {
+			text: props.options.title,
+		},
+		legend,
+		color:['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
 		type:'Bar',
+		toolbox: {
+			show: true,
+			feature: {
+			saveAsImage: {},
+			},
+		},
+		tooltip: {
+			trigger: 'axis',
+			axisPointer: {
+				type: 'cross',
+				link:[{
+					yAxisIndex:'all',
+					xAxisIndex:'all',
+				}],
+			},
+		},
 		xAxis,
 		yAxis,
 		series,

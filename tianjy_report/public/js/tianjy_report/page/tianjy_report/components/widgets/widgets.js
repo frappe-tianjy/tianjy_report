@@ -1,6 +1,13 @@
 import { defineAsyncComponent } from 'vue';
 
 import Bar from './Bar/Bar.vue';
+import BarOption from './Bar/BarOptions.vue';
+import Table from './Table/Table.vue';
+import TableOption from './Table/TableOptions.vue';
+import Pie from './Pie/Pie.vue';
+import PieOption from './Pie/PieOptions.vue';
+import Line from './Line/Line.vue';
+import LineOptions from './Line/LineOptions.vue';
 const VALID_CHARTS = ['Number', 'Line', 'Bar', 'Pie', 'Table'];
 
 const WIDGETS = {
@@ -13,52 +20,42 @@ const WIDGETS = {
 	// 	defaultWidth: 4,
 	// 	defaultHeight: 4,
 	// },
-	// Line: {
-	// 	type: 'Line',
-	// 	icon: 'trending-up',
-	// 	component: defineAsyncComponent(() => import('./Line/Line.vue')),
-	// 	optionsComponent: defineAsyncComponent(() => import('./Line/LineOptions.vue')),
-	// 	options: {},
-	// 	defaultWidth: 10,
-	// 	defaultHeight: 8,
-	// },
-	Bar: {
-		type: 'Bar',
-		icon: 'bar-chart',
-		// component: defineAsyncComponent(() => import('./Bar/Bar.vue')),
-		component: Bar,
-		// optionsComponent: defineAsyncComponent(() => import('./Bar/BarOptions.vue')),
+	Line: {
+		type: 'Line',
+		icon: 'trending-up',
+		component: Line,
+		optionsComponent: LineOptions,
 		options: {},
 		defaultWidth: 10,
 		defaultHeight: 8,
 	},
-	// Pie: {
-	// 	type: 'Pie',
-	// 	icon: 'pie-chart',
-	// 	component: defineAsyncComponent(() => import('./Pie/Pie.vue')),
-	// 	optionsComponent: defineAsyncComponent(() => import('./Pie/PieOptions.vue')),
-	// 	options: {},
-	// 	defaultWidth: 10,
-	// 	defaultHeight: 8,
-	// },
-	// Table: {
-	// 	type: 'Table',
-	// 	icon: 'grid',
-	// 	component: defineAsyncComponent(() => import('./Table/Table.vue')),
-	// 	optionsComponent: defineAsyncComponent(() => import('./Table/TableOptions.vue')),
-	// 	options: {},
-	// 	defaultWidth: 12,
-	// 	defaultHeight: 8,
-	// },
-	// Filter: {
-	// 	type: 'Filter',
-	// 	icon: 'filter',
-	// 	component: defineAsyncComponent(() => import('./Filter/Filter.vue')),
-	// 	optionsComponent: defineAsyncComponent(() => import('./Filter/FilterOptions.vue')),
-	// 	options: {},
-	// 	defaultWidth: 5,
-	// 	defaultHeight: 2,
-	// },
+	Bar: {
+		type: 'Bar',
+		icon: 'bar-chart',
+		component: Bar,
+		optionsComponent: BarOption,
+		options: {},
+		defaultWidth: 10,
+		defaultHeight: 8,
+	},
+	Pie: {
+		type: 'Pie',
+		icon: 'pie-chart',
+		component: Pie,
+		optionsComponent: PieOption,
+		options: {},
+		defaultWidth: 10,
+		defaultHeight: 8,
+	},
+	Table: {
+		type: 'Table',
+		icon: 'grid',
+		component: Table,
+		optionsComponent: TableOption,
+		options: {},
+		defaultWidth: 12,
+		defaultHeight: 8,
+	},
 	// Text: {
 	// 	type: 'Text',
 	// 	icon: 'align-left',

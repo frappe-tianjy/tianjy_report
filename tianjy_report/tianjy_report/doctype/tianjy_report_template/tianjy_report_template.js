@@ -6,7 +6,9 @@ frappe.ui.form.on('Tianjy Report Template', {
 		bulk_report_table_button(frm)
 		if(!frm.is_new() && frappe.perm.has_perm("Tianjy Report Template", 0, 'write')){
 			frm.add_custom_button('Edit Report Template Layout', () => {
-				frappe.set_route("模版布局配置");
+				const a = document.createElement('a');
+				a.href = `/app/tianjy-report-page?name=${frm.doc.name}&mode=template`;
+				a.click();
 			})
 		}
 	}

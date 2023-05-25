@@ -1,13 +1,34 @@
 <template>
-	<div class="container">
+	<div class="title container">
+		<h3>{{ subject }}</h3>
+	</div>
+	<div class="container editor-container">
 		<editor-content :editor="editor" class="editor" />
+		<bubble-menu
+			:editor="editor"
+			:tippy-options="{ duration: 100 }"
+			v-if="editor">
+			<ElButton type="default"
+				@click="editor.chain().focus().toggleBold().run()"
+				:class="{ 'is-active': editor.isActive('bold') }">
+				bold
+			</ElButton>
+			<ElButton @click="editor.chain().focus().toggleItalic().run()"
+				:class="{ 'is-active': editor.isActive('italic') }">
+				italic
+			</ElButton>
+			<ElButton @click="editor.chain().focus().toggleStrike().run()"
+				:class="{ 'is-active': editor.isActive('strike') }">
+				strike
+			</ElButton>
+		</bubble-menu>
 	</div>
 </template>
 
 <script setup lang='ts'>
 import { ref, defineProps, defineEmits, onMounted, watch, computed } from 'vue';
 
-import { useEditor, EditorContent } from '@tiptap/vue-3';
+import { useEditor, EditorContent, BubbleMenu } from '@tiptap/vue-3';
 import Table from '@tiptap/extension-table';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
@@ -17,6 +38,10 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Gapcursor from '@tiptap/extension-gapcursor';
 import Document from '@tiptap/extension-document';
 import Heading from '@tiptap/extension-heading';
+import Image from '@tiptap/extension-image';
+import BulletList from '@tiptap/extension-bullet-list';
+import ListItem from '@tiptap/extension-list-item';
+import OrderedList from '@tiptap/extension-ordered-list';
 
 import SlashCommand from '../command/commands';
 import suggestion from '../command/suggestion';
@@ -35,6 +60,8 @@ const searchParams = new URLSearchParams(location.search);
 const reportName = searchParams.get('name');
 const mode = searchParams.get('mode');
 const content = ref<Record<string, any>>({});
+const subject = ref<string>('');
+
 const reportType =computed(()=>mode==='template'?'Tianjy Report Template':'Tianjy Report');
 
 function saveLayout(json:any){
@@ -56,6 +83,9 @@ const editor = useEditor({
 			Gapcursor,
 			Table.configure({
 				resizable: true,
+				HTMLAttributes: {
+					class: 'tiptap-table',
+				},
 			}),
 			TableRow,
 			TableHeader,
@@ -63,18 +93,27 @@ const editor = useEditor({
 			Placeholder.configure({
 				placeholder: ({ node }) => {
 					if (node.type.name === 'heading') {
-						return `Heading ${node.attrs.level}`;
+						return `Heading ${node.attrs.level-1}`;
 					}
 					return 'Type / to insert a block';
 				},
 			}),
+			BubbleMenu,
+			Image.configure({
+				inline: true,
+				allowBase64: true,
+			}),
+			BulletList,
+			OrderedList,
+			ListItem,
 		],
 	});
 
 watch([()=>reportName, ()=>mode], async()=>{
 	if (!reportName){ return; }
-	const res:{layout?:string} = await frappe.db.get_doc(reportType.value, reportName );
+	const res:{layout?:string, subject:string} = await frappe.db.get_doc(reportType.value, reportName );
 	content.value = JSON.parse(res.layout||'{}');
+	subject.value = res.subject;
 }, {immediate:true});
 
 watch([content, editor], ()=>{
@@ -84,9 +123,22 @@ watch([content, editor], ()=>{
 </script>
 
 <style lang='less' scoped>
+.title {
+	height: 75px;
+	height: 75px;
+	display: flex;
+	align-items: center;
+	line-height: 75px;
+}
+
 .container {
 	width: 50rem;
 	margin: 0 auto;
+}
+
+.editor-container {
+	height: calc(100vh - 135px);
+	overflow: auto;
 }
 
 :deep(.ProseMirror) {
@@ -132,7 +184,7 @@ watch([content, editor], ()=>{
 	height: 0;
 }
 
-:deep(.ProseMirror) {
+:deep(.ProseMirror .tableWrapper) {
 	table {
 		border-collapse: collapse;
 		table-layout: fixed;

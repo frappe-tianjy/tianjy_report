@@ -1,83 +1,99 @@
-<script setup>
-import Chart from '@/components/Charts/Chart.vue'
-import ChartAxis from '@/components/Charts/ChartAxis.vue'
-import ChartGrid from '@/components/Charts/ChartGrid.vue'
-import ChartLegend from '@/components/Charts/ChartLegend.vue'
-import ChartSeries from '@/components/Charts/ChartSeries.vue'
-import ChartTooltip from '@/components/Charts/ChartTooltip.vue'
-import { computed } from 'vue'
-
-const props = defineProps({
-	chartData: { type: Object, required: true },
-	options: { type: Object, required: true },
-})
-
-const results = computed(() => props.chartData.data)
-const labels = computed(() => {
-	if (!results.value?.length || !props.options.xAxis) return []
-	const columns = results.value[0].map((d) => d.label)
-	const columnIndex = columns.indexOf(props.options.xAxis)
-	return results.value.slice(1).map((d) => d[columnIndex])
-})
-
-const datasets = computed(() => {
-	if (!results.value?.length || !props.options.yAxis) return []
-	return props.options.yAxis.map((column) => {
-		const columns = results.value[0].map((d) => d.label)
-		const columnIndex = columns.indexOf(column)
-		return {
-			label: column,
-			data: results.value.slice(1).map((d) => d[columnIndex]),
-		}
-	})
-})
-
-const shouldRender = computed(() => {
-	return !!labels.value.length && !!datasets.value.length
-})
-
-const markLine = computed(() =>
-	props.options.referenceLine
-		? {
-				data: [
-					{
-						name: props.options.referenceLine,
-						type: props.options.referenceLine.toLowerCase(),
-						label: { position: 'middle', formatter: '{b}: {c}' },
-					},
-				],
-		  }
-		: {}
-)
-</script>
-
 <template>
-	<Chart
-		v-if="shouldRender"
-		ref="eChart"
-		:chartTitle="props.options.title"
-		:chartSubtitle="props.options.subtitle"
-		:color="props.options.colors"
-	>
-		<ChartGrid>
-			<ChartLegend type="scroll" bottom="bottom" />
-			<ChartAxis axisType="xAxis" type="category" :axisTick="false" :data="labels" />
-			<ChartAxis axisType="yAxis" type="value" splitLine-lineStyle-type="dashed" />
-			<ChartSeries
-				v-for="dataset in datasets"
-				:name="dataset.label"
-				:data="dataset.data"
-				type="line"
-				:smooth="props.options.smoothLines ? 0.4 : false"
-				:smoothMonotone="'x'"
-				:showSymbol="props.options.showPoints"
-				:markLine="markLine"
-				:areaStyle="{ opacity: props.options.showArea ? 0.1 : 0 }"
-			/>
-			<ChartTooltip />
-		</ChartGrid>
-	</Chart>
-	<template v-else>
-		<slot name="placeholder"></slot>
-	</template>
+	<div ref="chartRef" class="chart"></div>
 </template>
+
+<script setup lang="ts">
+import { computed, ref, onMounted, reactive, watch } from 'vue';
+
+import * as echarts from 'echarts';
+
+interface Props{
+	data:Record<string, any>[]
+	options:Record<string, any>
+}
+const props = defineProps<Props>();
+const chartRef = ref(null);
+let chart:any = null;
+
+const formatOptions = computed(()=>{
+	const xAxisF = props.options.xAxis?.fieldname;
+	const xAxisData = (props.data||[])?.map(item=>{
+		const isLink = props.options.xAxis?.fieldtype === 'Link'||props.options.xAxis?.fieldtype === 'Tree Select';
+		return isLink?__(item[`${xAxisF}.title`]):__(item[xAxisF]);
+	});
+	const xAxis = {
+                    'type': 'category',
+					'name': __(props.options.xAxis?.label||'x轴'),
+                    'data': xAxisData,
+                };
+	const yAxisArr = props.options.yAxis||[];
+	const yLabel = yAxisArr.length===1?yAxisArr[0]?.label:'';
+	const yAxis = {
+		'type': 'value',
+		'name': __(yLabel||'值'),
+	};
+	const series = yAxisArr.map(yAxisF=>{
+		const data=(props.data||[]).map(item=>item[yAxisF.fieldname]);
+		return {
+			data,
+			'type': 'line',
+			name:__(yAxisF.label),
+			label:{
+				show:true,
+				position: 'top',
+			},
+		};
+	});
+	const legend = {
+		data:yAxisArr.map(item=>__(item.label)),
+	};
+	if (!props.data||xAxisData.length===0){ return {}; }
+	const formatOptions={
+		title: {
+			text: props.options.title,
+		},
+		legend,
+		color:['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
+		toolbox: {
+				show: true,
+				feature: {
+				saveAsImage: {},
+			},
+		},
+		tooltip: {
+			trigger: 'axis',
+			axisPointer: {
+				type: 'cross',
+				link:[{
+					yAxisIndex:'all',
+					xAxisIndex:'all',
+				}],
+			},
+		},
+		xAxis,
+		yAxis,
+		series,
+	};
+	return formatOptions;
+});
+watch(formatOptions, setOption, { deep: true });
+function setOption() {
+	chart?.setOption(formatOptions.value);
+}
+
+onMounted(() => {
+	chart = echarts.init(chartRef.value, 'light', {
+		renderer: 'canvas',
+	});
+	setOption();
+});
+
+function valueFormatter(value) {
+	return isNaN(value) ? value : value.toLocaleString();
+}
+</script>
+<style scoped>
+.chart {
+	height: 100%;
+}
+</style>
