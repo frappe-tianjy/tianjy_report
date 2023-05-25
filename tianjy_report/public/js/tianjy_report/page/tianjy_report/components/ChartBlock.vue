@@ -1,7 +1,8 @@
 <template>
-	<div class="chart-container" ref="blockRef" v-click-outside="onClickOutside">
+	<div v-loading="chart.loading" class="chart-container" ref="blockRef"
+		v-click-outside="onClickOutside">
 		<component
-			v-if="chart?.doc?.type"
+			v-if="chart?.doc?.type&&chart?.doc?.source_doctype"
 			ref="widget"
 			:is="widgets.getComponent(chart?.doc?.type)"
 			:data="chart.data"
@@ -16,7 +17,7 @@
 		<div
 			v-else
 			class="placeholder">
-			<div class="mb-1 w-[10rem] text-gray-400">Select a query</div>
+			<div class="mb-1 w-[10rem] text-gray-400">请配置图表</div>
 		</div>
 		<BlockActions :blockRef="blockRef" ref="actionsRef">
 			<ChartSettingForm @remove="emit('remove')"></ChartSettingForm>
@@ -63,19 +64,14 @@ function onClickOutside () {
 }
 </script>
 <style scoped lang="less">
-.chart-container {
-	height: 20rem;
-	position: relative;
-	border: 1px solid #e2e8f0;
-	border-radius: 0.25rem;
-	margin: 1.5rem 0;
-}
-
 .placeholder {
-	height: 100%;
+	height: 20rem;
 	width: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.25rem;
+	margin: 1.5rem 0;
 }
 </style>

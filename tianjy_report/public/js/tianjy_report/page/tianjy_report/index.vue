@@ -129,11 +129,16 @@ watch([content, editor], ()=>{
 	display: flex;
 	align-items: center;
 	line-height: 75px;
+
+	h3 {
+		margin: 0;
+	}
 }
 
 .container {
 	width: 50rem;
 	margin: 0 auto;
+	background: #fff;
 }
 
 .editor-container {
