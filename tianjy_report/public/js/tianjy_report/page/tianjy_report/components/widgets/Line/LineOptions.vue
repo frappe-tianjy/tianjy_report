@@ -21,7 +21,7 @@
 			<el-form-item label="Y 轴" prop="yAxis">
 				<ElSelect v-model="form.yAxis" :teleported="false" multiple
 					@change="changeY">
-					<ElOption v-for="f in fields"
+					<ElOption v-for="f in numberFields"
 						:value="f.fieldname"
 						:label="tt(f.label)">
 					</ElOption>
@@ -37,6 +37,7 @@ import { ref, defineProps, defineEmits, reactive, watch, inject, Ref, computed }
 import type { FormInstance, FormRules } from 'element-plus';
 
 import { ChartOptions, ChartProvide } from '../../../../type';
+import { numberFieldTypes } from '../../helper';
 const notValueField = ['HTML Editor', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor', 'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Connection Table'];
 
 const formRef = ref<FormInstance>();
@@ -88,6 +89,7 @@ watch(doctype, async ()=>{
 	const f = frappe.get_doc('DocType', doctype.value)?.fields || [];
 	fields.value = f.filter(item=>!notValueField.includes(item.fieldtype));
 }, {immediate:true});
+const numberFields = computed(()=>fields.value.filter(f=>numberFieldTypes.includes(f.fieldtype)));
 
 function changeTitle(value:string){
 	if (!chart){ return; }

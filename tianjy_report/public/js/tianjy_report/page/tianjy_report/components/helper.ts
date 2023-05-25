@@ -5,6 +5,7 @@ import { debounce } from 'lodash';
 
 import { ChartOptions, ChartProvide } from '../../type';
 import requestDocList from '../../../../utils/requestDocList';
+export const numberFieldTypes=['Currency', 'Float', 'Int', 'Percent'];
 
 function safeJSONParse(str:string, defaultValue = null) {
 	if (str === null || str === undefined) {
@@ -61,7 +62,7 @@ function getChart(chartName:string, mode:string|null):ChartProvide {
 	const state = reactive<ChartOptions>({
 		data: [],
 		columns: [],
-		loading: false,
+		loading: true,
 		options: {},
 		autosave: false,
 		deleting:false,
@@ -76,26 +77,30 @@ function getChart(chartName:string, mode:string|null):ChartProvide {
 
 	async function load() {
 		state.loading = true;
-		const block = await frappe.db.get_doc(blockType, chartName);
-		if (block.options){
-			block.options = safeJSONParse(block.options);
-		} else {
-			block.options = {};
-		}
-		state.doc = block;
-		let {filter} = block;
-		if (typeof block.filter === 'string'){
-			filter = frappe.utils.get_filter_from_json(
-				block.filter,
-				state.doc.source_doctype
-			);
-		}
-		state.doc.filter = filter;
-		if (!state.doc.source_doctype) {
+		try {
+			const block = await frappe.db.get_doc(blockType, chartName);
+			if (block.options){
+				block.options = safeJSONParse(block.options);
+			} else {
+				block.options = {};
+			}
+			state.doc = block;
+			let {filter} = block;
+			if (typeof block.filter === 'string'){
+				filter = frappe.utils.get_filter_from_json(
+					block.filter,
+					state.doc.source_doctype
+				);
+			}
+			state.doc.filter = filter;
+			if (!state.doc.source_doctype) {
+				state.loading = false;
+				return;
+			}
+			updateChartData();
+		} catch {
 			state.loading = false;
-			return;
 		}
-		updateChartData();
 	}
 	load();
 

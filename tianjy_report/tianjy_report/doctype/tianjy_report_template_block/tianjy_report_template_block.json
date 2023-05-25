@@ -18,7 +18,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Type",
-   "options": "Table\nBar\nPie\nLine",
+   "options": "Table\nBar\nPie\nLine\nText",
    "read_only": 1
   },
   {
@@ -53,7 +53,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-25 15:42:13.268925",
+ "modified": "2023-05-25 17:09:34.774780",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report Template Block",
