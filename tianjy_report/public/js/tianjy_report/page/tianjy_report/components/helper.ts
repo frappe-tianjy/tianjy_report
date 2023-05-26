@@ -70,6 +70,7 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 				const blocks = await frappe.db.get_list(blockType, {
 					fields:['*'],
 					filters:[['report', '=', reportName], ['reference_block_name', '=', chartName]],
+					limit:0,
 				});
 				[block] = blocks;
 			}
@@ -128,10 +129,13 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 	}
 
 	function save() {
-		frappe.db.set_value(blockType, chartName, {
-			type: state.doc.type,
-			source_doctype: state.doc.source_doctype,
-			options: state.doc.options,
+		frappe.call({
+			method: 'tianjy_report.report.report.update_block',
+			args: { blockType, chartName, reportName, data: {
+				type: state.doc.type,
+				source_doctype: state.doc.source_doctype,
+				options: state.doc.options,
+			}},
 		});
 	}
 

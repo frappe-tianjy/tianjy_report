@@ -57,7 +57,6 @@ const reportType =computed(()=>mode==='template'?'Tianjy Report Template':'Tianj
 
 function saveLayout(json:any){
 	if (!reportName){ return; }
-	if (mode!=='template'){ return; }
 	frappe.db.set_value(reportType.value, reportName, {layout:json});
 }
 const updateLayout = debounce(saveLayout, 500);
@@ -123,8 +122,14 @@ watch([content, editor], ()=>{
 	editor.value.commands.setContent(content.value||'', false);
 }, {immediate:true});
 
-function persistent(){
-	// todo 持久化
+async function persistent(){
+	await frappe.call({
+		method: 'tianjy_report.tianjy_report.doctype.tianjy_report.tianjy_report.source_persistence',
+		args: {
+			report_name: reportName,
+			persistence_state: 1,
+		},
+	});
 	const a = document.createElement('a');
 	a.href = `/app/tianjy-report-page?name=${reportName}&mode=report`;
 	a.click();
