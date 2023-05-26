@@ -21,7 +21,7 @@ import CommandsList from './CommandsList.vue';
 export default {
 	items: ({ query }) => [
 		{
-			title: 'Paragraph',
+			title: '段落',
 			icon: ParkingSquare,
 			command: ({ editor, range }) => {
 				editor.chain().focus().deleteRange(range)
@@ -31,7 +31,7 @@ export default {
 			disabled: editor => editor.isActive('table'),
 		},
 		{
-			title: 'Heading 1',
+			title: '标题 1',
 			icon: Heading1,
 			command: ({ editor, range }) => {
 				editor.chain().focus().deleteRange(range)
@@ -41,7 +41,7 @@ export default {
 			disabled: editor => editor.isActive('table'),
 		},
 		{
-			title: 'Heading 2',
+			title: '标题 2',
 			icon: Heading2,
 			command: ({ editor, range }) => {
 				editor.chain().focus().deleteRange(range)
@@ -51,7 +51,7 @@ export default {
 			disabled: editor => editor.isActive('table'),
 		},
 		{
-			title: 'Heading 3',
+			title: '标题 3',
 			icon: Heading3,
 			command: ({ editor, range }) => {
 				editor.chain().focus().deleteRange(range)
@@ -61,7 +61,7 @@ export default {
 			disabled: editor => editor.isActive('table'),
 		},
 		{
-			title: 'Table',
+			title: '表格',
 			icon: Table,
 			command: ({ editor, range }) => {
 				editor
@@ -74,7 +74,7 @@ export default {
 			disabled: editor => editor.isActive('table'),
 		},
 		{
-			title: 'Add Column',
+			title: '添加列',
 			command: ({ editor, range }) => {
 				editor.chain().focus().deleteRange(range)
 					.addColumnAfter()
@@ -83,7 +83,7 @@ export default {
 			disabled: editor => !editor.isActive('table'),
 		},
 		{
-			title: 'Add Row',
+			title: '添加行',
 			command: ({ editor, range }) => {
 				editor.chain().focus().deleteRange(range)
 					.addRowAfter()
@@ -92,7 +92,7 @@ export default {
 			disabled: editor => !editor.isActive('table'),
 		},
 		{
-			title: 'Delete Column',
+			title: '删除列',
 			command: ({ editor, range }) => {
 				editor.chain().focus().deleteRange(range)
 					.deleteColumn()
@@ -101,7 +101,7 @@ export default {
 			disabled: editor => !editor.isActive('table'),
 		},
 		{
-			title: 'Delete Row',
+			title: '删除行',
 			command: ({ editor, range }) => {
 				editor.chain().focus().deleteRange(range)
 					.deleteRow()
@@ -110,7 +110,7 @@ export default {
 			disabled: editor => !editor.isActive('table'),
 		},
 		{
-			title: 'Delete Table',
+			title: '删除表格',
 			command: ({ editor, range }) => {
 				editor.chain().focus().deleteRange(range)
 					.deleteTable()
@@ -119,7 +119,7 @@ export default {
 			disabled: editor => !editor.isActive('table'),
 		},
 		{
-			title: 'Chart',
+			title: '图表',
 			icon: markRaw(LineChart),
 			command: ({ editor, range }) => {
 				const element = '<chart></chart>';
@@ -130,7 +130,7 @@ export default {
 			disabled: editor => !editor.isActive('paragraph') || editor.isActive('table'),
 		},
 		{
-			title: 'Image',
+			title: '图片',
 			icon: markRaw(Image),
 			command: ({ editor, range }) => {
 				const input = document.createElement('input');
@@ -152,7 +152,7 @@ export default {
 			disabled: editor => editor.isActive('table'),
 		},
 		{
-			title: 'Order List',
+			title: '有序列表',
 			icon: markRaw(ListOrdered),
 			command: ({ editor, range }) => {
 				editor.chain().focus().toggleOrderedList()
@@ -161,7 +161,7 @@ export default {
 			disabled: editor => editor.isActive('table'),
 		},
 		{
-			title: 'Bullet List',
+			title: '无序列表',
 			icon: markRaw(List),
 			command: ({ editor, range }) => {
 				editor.chain().focus().toggleBulletList()
