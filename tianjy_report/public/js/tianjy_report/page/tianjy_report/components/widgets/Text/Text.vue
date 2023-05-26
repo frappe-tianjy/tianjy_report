@@ -1,5 +1,8 @@
 <template>
-	<div class="text-container">{{ text }}</div>
+	<div v-if="options.content" class="text-container">{{ text }}</div>
+	<div v-else class="placeholder">
+		请配置模版字符串
+	</div>
 </template>
 
 <script setup lang="ts">
@@ -41,5 +44,11 @@ const text = computed(()=>{
 .text-container {
 	word-break: break-all;
 	white-space: break-spaces;
+}
+
+.placeholder {
+	height: 200px;
+	width: 100%;
+	text-align: center;
 }
 </style>
