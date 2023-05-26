@@ -1,13 +1,15 @@
 <template>
-	<div class="title container">
-		<h3>{{ subject }}</h3>
-		<ElButton type="primary" v-if="mode==='report'&&isPersistence===false"
-			class="persis-btn"
-			@click="persistent">持久化</ElButton>
-	</div>
-	<Tools :editor="editor"></Tools>
-	<div class="container editor-container">
-		<editor-content :editor="editor" class="editor" />
+	<div v-loading="loading">
+		<div class="title container">
+			<h3>{{ subject }}</h3>
+			<ElButton type="primary" v-if="mode==='report'&&isPersistence===false"
+				class="persis-btn"
+				@click="persistent">持久化</ElButton>
+		</div>
+		<Tools :editor="editor"></Tools>
+		<div class="container editor-container">
+			<editor-content :editor="editor" class="editor" />
+		</div>
 	</div>
 </template>
 
@@ -51,6 +53,8 @@ const mode = searchParams.get('mode') as 'template'|'report';
 const content = ref<Record<string, any>>({});
 const subject = ref<string>('');
 const loaded = ref<boolean>(false);
+const loading = ref<boolean>(true);
+
 const isPersistence=ref<boolean>(false);
 provide('isPersistence', isPersistence);
 const reportType =computed(()=>mode==='template'?'Tianjy Report Template':'Tianjy Report');
@@ -107,13 +111,14 @@ const editor = useEditor({
 watch([()=>reportName, ()=>mode], async()=>{
 	if (!reportName){ return; }
 	loaded.value=false;
+	loading.value=true;
 	const res:{layout?:string, subject:string, is_persistence?:0|1, } = await frappe.db.get_doc(reportType.value, reportName );
 	content.value = JSON.parse(res.layout||'{}');
 	subject.value = res.subject;
 	editor.value.setEditable(res.is_persistence?.toString()!=='1');
 	isPersistence.value = res.is_persistence?.toString()==='1';
-	// editor.value.commands.updateAttributes('Chart', { persistence: (res.is_persistence||0).toString() });
 	loaded.value=true;
+	loading.value=false;
 }, {immediate:true});
 
 watch([content, editor], ()=>{
@@ -123,6 +128,7 @@ watch([content, editor], ()=>{
 }, {immediate:true});
 
 async function persistent(){
+	loading.value=true;
 	await frappe.call({
 		method: 'tianjy_report.tianjy_report.doctype.tianjy_report.tianjy_report.source_persistence',
 		args: {
@@ -133,6 +139,7 @@ async function persistent(){
 	const a = document.createElement('a');
 	a.href = `/app/tianjy-report-page?name=${reportName}&mode=report`;
 	a.click();
+	loading.value=false;
 }
 </script>
 
