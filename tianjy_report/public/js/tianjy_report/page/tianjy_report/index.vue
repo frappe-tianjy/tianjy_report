@@ -2,31 +2,16 @@
 	<div class="title container">
 		<h3>{{ subject }}</h3>
 	</div>
+	<Tools :editor="editor"></Tools>
 	<div class="container editor-container">
 		<editor-content :editor="editor" class="editor" />
-		<bubble-menu
-			:editor="editor"
-			:tippy-options="{ duration: 100 }"
-			v-if="editor">
-			<ElButton type="default"
-				@click="editor.chain().focus().toggleBold().run()"
-				:class="{ 'is-active': editor.isActive('bold') }">
-				bold
-			</ElButton>
-			<ElButton @click="editor.chain().focus().toggleItalic().run()"
-				:class="{ 'is-active': editor.isActive('italic') }">
-				italic
-			</ElButton>
-			<ElButton @click="editor.chain().focus().toggleStrike().run()"
-				:class="{ 'is-active': editor.isActive('strike') }">
-				strike
-			</ElButton>
-		</bubble-menu>
 	</div>
 </template>
 
 <script setup lang='ts'>
 import { ref, defineProps, defineEmits, onMounted, watch, computed } from 'vue';
+
+import { debounce } from 'lodash';
 
 import { useEditor, EditorContent, BubbleMenu } from '@tiptap/vue-3';
 import Table from '@tiptap/extension-table';
@@ -42,12 +27,13 @@ import Image from '@tiptap/extension-image';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import OrderedList from '@tiptap/extension-ordered-list';
+import TextAlign from '@tiptap/extension-text-align';
 
 import SlashCommand from '../command/commands';
 import suggestion from '../command/suggestion';
 
 import Chart from './components/Chart';
-
+import Tools from './components/Tools.vue';
 interface Props{
 
 }
@@ -61,6 +47,8 @@ const reportName = searchParams.get('name');
 const mode = searchParams.get('mode');
 const content = ref<Record<string, any>>({});
 const subject = ref<string>('');
+const loaded = ref<boolean>(false);
+
 
 const reportType =computed(()=>mode==='template'?'Tianjy Report Template':'Tianjy Report');
 
@@ -69,11 +57,13 @@ function saveLayout(json:any){
 	if (mode!=='template'){ return; }
 	frappe.db.set_value(reportType.value, reportName, {layout:json});
 }
+const updateLayout = debounce(saveLayout, 500);
+
 const editor = useEditor({
-		content:'',
 		onUpdate: ({ editor }) => {
 			const json = editor.getJSON();
-			saveLayout(json);
+			if (!loaded.value){ return; }
+			updateLayout(json);
 		},
 		editable:false,
 		extensions: [
@@ -100,7 +90,6 @@ const editor = useEditor({
 					return 'Type / to insert a block';
 				},
 			}),
-			BubbleMenu,
 			Image.configure({
 				inline: true,
 				allowBase64: true,
@@ -108,6 +97,9 @@ const editor = useEditor({
 			BulletList,
 			OrderedList,
 			ListItem,
+			TextAlign.configure({
+				types: ['heading', 'paragraph'],
+			}),
 		],
 	});
 watch([()=>mode, editor], ()=>{
@@ -116,13 +108,16 @@ watch([()=>mode, editor], ()=>{
 }, {immediate:true});
 watch([()=>reportName, ()=>mode], async()=>{
 	if (!reportName){ return; }
+	loaded.value=false;
 	const res:{layout?:string, subject:string} = await frappe.db.get_doc(reportType.value, reportName );
 	content.value = JSON.parse(res.layout||'{}');
 	subject.value = res.subject;
+	loaded.value=true;
 }, {immediate:true});
 
 watch([content, editor], ()=>{
 	if (!editor.value){ return; }
+	if (!loaded.value){ return; }
 	editor.value.commands.setContent(content.value||'', false);
 }, {immediate:true});
 </script>
@@ -147,7 +142,7 @@ watch([content, editor], ()=>{
 }
 
 .editor-container {
-	height: calc(100vh - 135px);
+	height: calc(100vh - 160px);
 	overflow: auto;
 }
 

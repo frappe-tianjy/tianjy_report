@@ -59,21 +59,6 @@ export default function useChart(initChart:ChartOptions, name:string, mode:strin
 
 function getChart(initChart:ChartOptions, chartName:string, mode:string|null):ChartProvide {
 	const blockType = mode==='template'?'Tianjy Report Template Block':'Tianjy Report Block';
-	// const state = reactive<ChartOptions>({
-	// 	data: [],
-	// 	columns: [],
-	// 	loading: true,
-	// 	options: {},
-	// 	autosave: false,
-	// 	deleting:false,
-	// 	doc: {
-	// 		name: undefined,
-	// 		type: undefined,
-	// 		options: {},
-	// 		filter:undefined,
-	// 		source_doctype:undefined,
-	// 	},
-	// });
 	const state = initChart;
 	async function load() {
 		state.loading = true;
