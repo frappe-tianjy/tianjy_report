@@ -19,7 +19,8 @@
 				<ElTable :data="fields" height="300">
 					<el-table-column prop="label" :formatter="formatter"
 						label="名称" />
-					<el-table-column prop="fieldname" label="标识" />
+					<el-table-column prop="fieldname" label="标识"
+						:formatter="fieldnameFormatter" />
 				</ElTable>
 			</el-form-item>
 		</el-form>
@@ -91,6 +92,9 @@ function changeContent(v:string){
 
 function formatter(row:locals.DocField, column:any, cellValue:string, index:number){
 	return tt(cellValue);
+}
+function fieldnameFormatter(row:locals.DocField, column:any, cellValue:string, index:number){
+	return `{{${cellValue}}}`;
 }
 </script>
 
