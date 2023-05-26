@@ -7,8 +7,10 @@ Tianjy Report Category, 报告类别
 
 Layout, 布局
 Is Persistence, 是否持久化
+Data Source Persistence, 数据持久化
+Data Source Cancel Persistence, 取消数据持久化
 Source DocType, 数据源单据
 Blocks, 块
 
 Edit Report Template Layout, 编辑模版布局
-View Report, 查看报告内容
+View Report Content, 查看报告内容

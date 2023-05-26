@@ -44,12 +44,15 @@ def get_data(args):
 		
 
 @frappe.whitelist()
-def source_persistence(report_name):
+def source_persistence(report_name, persistence_state):
 	"""
 	持久化报告的数据源
 	"""
 	report = frappe.get_doc("Tianjy Report", report_name)
-	report.set("is_persistence", 1)
+	if not frappe.has_permission("Tianjy Report", "write"):
+		return
+
+	report.set("is_persistence", persistence_state)
 	report.save()
 	blocks = frappe.get_list("Tianjy Report Block",
 		filters = {"report": report_name},
@@ -66,6 +69,11 @@ def source_persistence(report_name):
 		data = get_data(frappe._dict(query_params))
 		sources = json.dumps(data, default=json_handler)
 		_block = frappe.get_doc("Tianjy Report Block", block.name)
-		_block.set('sources', sources)
+		if persistence_state == "1":
+			_block.set('sources', sources)
+		else:
+			_block.set('sources', {})
+
+		print(_block.sources)
 		_block.save()
 

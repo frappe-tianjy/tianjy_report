@@ -6,12 +6,22 @@ frappe.ui.form.on('Tianjy Report', {
 		hide_buttons(frm);
 		if(!frm.is_new() && frappe.perm.has_perm("Tianjy Report", 0, 'read')){
 			frm.add_custom_button('View Report', () => {
-				frappe.set_route("报告查看");
+				const a = document.createElement('a');
+				a.href = `/app/tianjy-report-page?name=${frm.doc.name}&mode=report`;
+				a.click();
 			})
 		}
-		frm.add_custom_button('持久化', () => {
-			per(frm.doc.name)
-		})
+		if(!frm.is_new() && frappe.perm.has_perm("Tianjy Report", 0, 'write')){
+			if(frm.doc.is_persistence){
+				frm.add_custom_button('Data Source Cancel Persistence', () => {
+					persistence(frm.doc.name, 0)
+				})
+			}else{
+				frm.add_custom_button('Data Source Persistence', () => {
+					persistence(frm.doc.name, 1)
+				})
+			}
+		}
 	},
 });
 
@@ -24,11 +34,12 @@ let hide_buttons = function (frm) {
 	blocks.setButtonVisible('add', false);
 }
 
-let per = function(name){
+let persistence = function(name, persistence_state){
 	frappe.call({
 		method: "tianjy_report.tianjy_report.doctype.tianjy_report.tianjy_report.source_persistence",
 		args: {
 			report_name: name,
+			persistence_state: persistence_state,
 		},
 		callback: function(r) {}
 	})

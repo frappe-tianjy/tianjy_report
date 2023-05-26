@@ -55,7 +55,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": " Tianjy Report Category",
+   "label": "Tianjy Report Category",
    "options": "Tianjy Report Category",
    "reqd": 1
   },
@@ -89,7 +89,7 @@
    "link_fieldname": "report_template"
   }
  ],
- "modified": "2023-05-24 13:56:54.855384",
+ "modified": "2023-05-26 10:18:13.464510",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report Template",
