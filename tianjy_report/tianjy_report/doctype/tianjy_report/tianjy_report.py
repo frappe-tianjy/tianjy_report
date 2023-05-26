@@ -1,11 +1,13 @@
 # Copyright (c) 2023, Tianjy and contributors
 # For license information, please see license.txt
+from datetime import datetime, date
 import json
 import frappe
 from frappe.model.base_document import get_controller
 from frappe.model.document import Document
 from frappe.desk.reportview import get_form_params, compress, execute
 from frappe.model.utils import is_virtual_doctype
+from frappe.utils.response import json_handler
 
 class TianjyReport(Document):
 	def before_save(self):
@@ -14,6 +16,9 @@ class TianjyReport(Document):
 			self.layout = report_template.layout
 
 	def after_insert(self):
+		"""
+		报告创建后根据报告模版的块创建报告块
+		"""
 		template_blocks = frappe.get_list("Tianjy Report Template Block", 
 			filters = {"report_template": self.report_template},
 			fields=['*'],
@@ -36,19 +41,31 @@ def get_data(args):
 	else:
 		data = compress(execute(**args), args=args)
 	return data
-
+		
 
 @frappe.whitelist()
-def report_data_source_persistence(report_name):
-	blocks = frappe.get_list("Tianjy Report Block", {"report": report_name})
+def source_persistence(report_name):
+	"""
+	持久化报告的数据源
+	"""
+	report = frappe.get_doc("Tianjy Report", report_name)
+	report.set("is_persistence", 1)
+	report.save()
+	blocks = frappe.get_list("Tianjy Report Block",
+		filters = {"report": report_name},
+		fields = ['*'],
+		limit = 0
+	)
 	for block in blocks:
 		query_params = {
 			"doctype": block.source_doctype,
 			"fields": ["*"],
-			"view": "List",
-			"filters": block.filter
+			"filters": eval(block.filter),
+			'strict': "None"
 		}
-		data = get_data(query_params)
-		block.sources = data
-		block.save()
+		data = get_data(frappe._dict(query_params))
+		sources = json.dumps(data, default=json_handler)
+		_block = frappe.get_doc("Tianjy Report Block", block.name)
+		_block.set('sources', sources)
+		_block.save()
 

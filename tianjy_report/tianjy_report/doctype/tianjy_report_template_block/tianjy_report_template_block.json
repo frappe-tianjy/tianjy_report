@@ -24,8 +24,7 @@
   {
    "fieldname": "filter",
    "fieldtype": "JSON",
-   "label": "Fitler",
-   "read_only": 1
+   "label": "Fitler"
   },
   {
    "fieldname": "options",
@@ -53,7 +52,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-25 15:42:13.268925",
+ "modified": "2023-05-25 16:23:10.366245",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report Template Block",
