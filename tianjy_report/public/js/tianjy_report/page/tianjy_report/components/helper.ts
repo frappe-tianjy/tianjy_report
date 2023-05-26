@@ -81,7 +81,11 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 			}
 			state.doc = block;
 			if (block.sources){
-				state.doc.sources = safeJSONParse(block.sources);
+				const objSources = safeJSONParse(block.sources);
+				const sources = !Array.isArray(objSources)
+					? frappe.utils.dict(objSources.keys, objSources.values)
+					: objSources;
+				state.doc.sources = sources;
 			}
 			let {filter} = block;
 			if (typeof block.filter === 'string'){
@@ -129,6 +133,7 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 	}
 
 	function save() {
+		if (isPersistence){ return; }
 		frappe.call({
 			method: 'tianjy_report.report.report.update_block',
 			args: { blockType, chartName, reportName, data: {
@@ -183,4 +188,11 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 		disableAutoSave,
 		delete: deleteChart,
 	});
+}
+
+
+function formatData(data:any){
+	const values = !Array.isArray(data)
+		? frappe.utils.dict(data.keys, data.values)
+		: data;
 }

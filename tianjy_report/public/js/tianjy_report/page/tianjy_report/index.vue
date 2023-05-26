@@ -6,7 +6,7 @@
 				class="persis-btn"
 				@click="persistent">持久化</ElButton>
 		</div>
-		<Tools :editor="editor"></Tools>
+		<Tools v-if="!isPersistence" :editor="editor"></Tools>
 		<div class="container editor-container">
 			<editor-content :editor="editor" class="editor" />
 		</div>

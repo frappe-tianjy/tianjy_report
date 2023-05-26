@@ -52,7 +52,6 @@ const searchParams = new URLSearchParams(location.search);
 const reportName = searchParams.get('name');
 const mode = searchParams.get('mode');
 const isPersistence = inject('isPersistence');
-console.log('-----------------------', isPersistence);
 const chart=reactive<ChartProvide>({
 	data: [],
 	columns: [],
@@ -82,10 +81,10 @@ function getTimeout(infoEntry: IntersectionObserverEntry) {
 		if (!props.chartName) {
 			const chartName = await createChart(reportName||'', mode);
 			emit('setChartName', chartName);
-			const getChart = useChart(chart, reportName, chartName, mode, isPersistence);
+			const getChart = useChart(chart, reportName, chartName, mode, isPersistence.value);
 			Object.assign(chart, getChart);
 		} else {
-			const getChart = useChart(chart, reportName, props.chartName, mode, isPersistence);
+			const getChart = useChart(chart, reportName, props.chartName, mode, isPersistence.value);
 			Object.assign(chart, getChart);
 		}
 		chart?.enableAutoSave?.();
