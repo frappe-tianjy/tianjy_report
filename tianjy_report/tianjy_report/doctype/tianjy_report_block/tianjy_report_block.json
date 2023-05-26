@@ -11,7 +11,8 @@
   "type",
   "filter",
   "options",
-  "sources"
+  "sources",
+  "reference_block_name"
  ],
  "fields": [
   {
@@ -59,11 +60,16 @@
    "in_list_view": 1,
    "label": "Source DocType",
    "options": "DocType"
+  },
+  {
+   "fieldname": "reference_block_name",
+   "fieldtype": "Data",
+   "label": "Reference Block Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-25 21:21:40.251117",
+ "modified": "2023-05-26 13:56:19.670821",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report Block",
