@@ -50,26 +50,38 @@ export async function createChart(reportName:string, mode:string|null) {
 	return res?.name||'';
 }
 
-export default function useChart(initChart:ChartOptions, name:string, mode:string|null) {
+export default function useChart(initChart:ChartOptions, reportName:string, name:string, mode:string|null, isPersistence:boolean|null) {
 	if (!charts[name]) {
-		charts[name] = getChart(initChart, name, mode);
+		charts[name] = getChart(initChart, reportName, name, mode, isPersistence);
 	}
 	return charts[name];
 }
 
-function getChart(initChart:ChartOptions, chartName:string, mode:string|null):ChartProvide {
+function getChart(initChart:ChartOptions, reportName:string, chartName:string, mode:string|null, isPersistence:boolean|null):ChartProvide {
 	const blockType = mode==='template'?'Tianjy Report Template Block':'Tianjy Report Block';
 	const state = initChart;
 	async function load() {
 		state.loading = true;
 		try {
-			const block = await frappe.db.get_doc(blockType, chartName);
+			let block:any={};
+			if (mode==='template'){
+				block = await frappe.db.get_doc(blockType, chartName);
+			} else {
+				const blocks = await frappe.db.get_list(blockType, {
+					fields:['*'],
+					filters:[['report', '=', reportName], ['reference_block_name', '=', chartName]],
+				});
+				[block] = blocks;
+			}
 			if (block.options){
 				block.options = safeJSONParse(block.options);
 			} else {
 				block.options = {};
 			}
 			state.doc = block;
+			if (block.sources){
+				state.doc.sources = safeJSONParse(block.sources);
+			}
 			let {filter} = block;
 			if (typeof block.filter === 'string'){
 				filter = frappe.utils.get_filter_from_json(
@@ -92,21 +104,27 @@ function getChart(initChart:ChartOptions, chartName:string, mode:string|null):Ch
 	async function updateChartData() {
 		state.loading = true;
 		if (!state.doc.source_doctype){ return; }
-		frappe.model.with_doctype(state.doc.source_doctype, async () => {
-			if (!state.doc.source_doctype){ return; }
-			const meta = frappe.get_meta(state.doc.source_doctype);
-			if (!meta){ return; }
-			const notValueField = ['HTML Editor', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor',
-			'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Button', 'Fold', 'Connection Table', 'Table', 'Table MultiSelect' ];
-			await loadLinkDocTypes(meta);
-			const fields:[string, string][] = meta.fields
-				.filter(f=>!notValueField.includes(f.fieldtype)).map(f=>[f.fieldname, meta.name]);
-			const list = await requestDocList(meta, state.doc.filter??undefined, {
-				fields, limit:0, order:[], group:[],
-			});
-			state.data = list;
+		if (isPersistence===true){
+			state.data = state.doc.sources;
 			state.loading = false;
-		});
+		} else {
+			frappe.model.with_doctype(state.doc.source_doctype, async () => {
+				if (!state.doc.source_doctype){ return; }
+				const meta = frappe.get_meta(state.doc.source_doctype);
+				if (!meta){ return; }
+				const notValueField = ['HTML Editor', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor',
+				'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Button', 'Fold', 'Connection Table', 'Table', 'Table MultiSelect' ];
+				await loadLinkDocTypes(meta);
+				const fields:[string, string][] = meta.fields
+					.filter(f=>!notValueField.includes(f.fieldtype)).map(f=>[f.fieldname, meta.name]);
+				const list = await requestDocList(meta, state.doc.filter??undefined, {
+					fields, limit:0, order:[], group:[],
+				});
+				state.data = list;
+				state.loading = false;
+			});
+		}
+
 	}
 
 	function save() {

@@ -11,6 +11,7 @@ export interface ChartOptions{
 			options:Record<string, any>,
 			source_doctype?:string
 			filter:any,
+			sources:any[]
 		}
 
 	}

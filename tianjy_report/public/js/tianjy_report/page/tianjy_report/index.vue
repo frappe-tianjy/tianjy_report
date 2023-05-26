@@ -1,6 +1,9 @@
 <template>
 	<div class="title container">
 		<h3>{{ subject }}</h3>
+		<ElButton type="primary" v-if="mode==='report'&&isPersistence===false"
+			class="persis-btn"
+			@click="persistent">持久化</ElButton>
 	</div>
 	<Tools :editor="editor"></Tools>
 	<div class="container editor-container">
@@ -9,7 +12,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, defineProps, defineEmits, onMounted, watch, computed } from 'vue';
+import { ref, defineProps, defineEmits, onMounted, watch, computed, provide } from 'vue';
 
 import { debounce } from 'lodash';
 
@@ -44,12 +47,12 @@ interface Emit{
 const emit = defineEmits<Emit>();
 const searchParams = new URLSearchParams(location.search);
 const reportName = searchParams.get('name');
-const mode = searchParams.get('mode');
+const mode = searchParams.get('mode') as 'template'|'report';
 const content = ref<Record<string, any>>({});
 const subject = ref<string>('');
 const loaded = ref<boolean>(false);
-
-
+const isPersistence=ref<boolean>(false);
+provide('isPersistence', isPersistence);
 const reportType =computed(()=>mode==='template'?'Tianjy Report Template':'Tianjy Report');
 
 function saveLayout(json:any){
@@ -102,16 +105,15 @@ const editor = useEditor({
 			}),
 		],
 	});
-watch([()=>mode, editor], ()=>{
-	if (!editor.value){ return; }
-	editor.value.setEditable(mode==='template');
-}, {immediate:true});
 watch([()=>reportName, ()=>mode], async()=>{
 	if (!reportName){ return; }
 	loaded.value=false;
-	const res:{layout?:string, subject:string} = await frappe.db.get_doc(reportType.value, reportName );
+	const res:{layout?:string, subject:string, is_persistence?:0|1, } = await frappe.db.get_doc(reportType.value, reportName );
 	content.value = JSON.parse(res.layout||'{}');
 	subject.value = res.subject;
+	editor.value.setEditable(res.is_persistence?.toString()!=='1');
+	isPersistence.value = res.is_persistence?.toString()==='1';
+	// editor.value.commands.updateAttributes('Chart', { persistence: (res.is_persistence||0).toString() });
 	loaded.value=true;
 }, {immediate:true});
 
@@ -120,6 +122,13 @@ watch([content, editor], ()=>{
 	if (!loaded.value){ return; }
 	editor.value.commands.setContent(content.value||'', false);
 }, {immediate:true});
+
+function persistent(){
+	// todo 持久化
+	const a = document.createElement('a');
+	a.href = `/app/tianjy-report-page?name=${reportName}&mode=report`;
+	a.click();
+}
 </script>
 
 <style lang='less' scoped>
@@ -129,6 +138,7 @@ watch([content, editor], ()=>{
 	display: flex;
 	align-items: center;
 	line-height: 75px;
+	justify-content: space-between;
 
 	h3 {
 		margin: 0;
@@ -142,7 +152,7 @@ watch([content, editor], ()=>{
 }
 
 .editor-container {
-	height: calc(100vh - 160px);
+	height: calc(100vh - 170px);
 	overflow: auto;
 }
 
