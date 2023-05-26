@@ -1,29 +1,31 @@
 <template>
 	<div class="form">
-		<el-form-item label="单据">
-			<DocSelect v-model="doctype" @change="changeDoctype"></DocSelect>
-		</el-form-item>
-		<el-form-item label="图表类型">
-			<ElSelect v-model="chartType" :teleported="false"
-				@change="changeType">
-				<ElOption value="Bar" label="柱状图"></ElOption>
-				<ElOption value="Table" label="表格"></ElOption>
-				<ElOption value="Pie" label="饼状图"></ElOption>
-				<ElOption value="Line" label="折线图"></ElOption>
-				<ElOption value="Text" label="文本"></ElOption>
-			</ElSelect>
-		</el-form-item>
-		<el-form-item label="过滤器">
-			<Filter v-model="filter" :options="doctype"
-				@change="changeFilter"></Filter>
-		</el-form-item>
-		<component
-			v-if="chartType"
-			:is="widgets.getOptionComponent(chartType)"
-			:key="chartType" />
-		<el-form-item>
-			<el-button type="danger" @click="onDelete">删除</el-button>
-		</el-form-item>
+		<ElForm label-position="top" @submit.prevent>
+			<el-form-item label="单据">
+				<DocSelect v-model="doctype" @change="changeDoctype"></DocSelect>
+			</el-form-item>
+			<el-form-item label="图表类型">
+				<ElSelect v-model="chartType" :teleported="false"
+					@change="changeType">
+					<ElOption value="Bar" label="柱状图"></ElOption>
+					<ElOption value="Table" label="表格"></ElOption>
+					<ElOption value="Pie" label="饼状图"></ElOption>
+					<ElOption value="Line" label="折线图"></ElOption>
+					<ElOption value="Text" label="文本"></ElOption>
+				</ElSelect>
+			</el-form-item>
+			<el-form-item label="过滤器">
+				<Filter v-model="filter" :options="doctype"
+					@change="changeFilter"></Filter>
+			</el-form-item>
+			<component
+				v-if="chartType"
+				:is="widgets.getOptionComponent(chartType)"
+				:key="chartType" />
+			<el-form-item>
+				<el-button type="danger" @click="onDelete">删除</el-button>
+			</el-form-item>
+		</ElForm>
 	</div>
 </template>
 

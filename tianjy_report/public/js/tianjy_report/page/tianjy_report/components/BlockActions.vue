@@ -1,11 +1,12 @@
 <template>
 	<el-popover
-		width="180"
+		:popper-style="{'maxWidth':'450px', 'width':'auto'}"
 		ref="popoverRef"
 		:virtual-ref="blockRef"
 		:disabled="!editable"
 		trigger="click"
 		virtual-triggering
+		offset="-5"
 		placement="right-start">
 		<div>
 			<slot />

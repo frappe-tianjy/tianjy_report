@@ -189,10 +189,3 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 		delete: deleteChart,
 	});
 }
-
-
-function formatData(data:any){
-	const values = !Array.isArray(data)
-		? frappe.utils.dict(data.keys, data.values)
-		: data;
-}
