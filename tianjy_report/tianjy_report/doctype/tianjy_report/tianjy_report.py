@@ -42,6 +42,23 @@ def get_data(args):
 		data = compress(execute(**args), args=args)
 	return data
 		
+def get_fields(obj, arr):
+	for key, value in obj.items():
+		if (key in ('xAxis','yAxis','columns')):
+			arr.append(value)
+		else:
+			get_fields(value, arr)
+
+def query_fields(options):
+	opt = eval(options)
+	fields = []
+	get_fields(opt, fields)
+	for field in sum(fields,[]):
+			fields.append(field["fieldname"])
+			if field["fieldtype"] == "link":
+				fields.append(field["field_name"] + "_title")
+
+	return fields
 
 @frappe.whitelist()
 def source_persistence(report_name, persistence_state):
@@ -62,10 +79,13 @@ def source_persistence(report_name, persistence_state):
 	for block in blocks:
 		query_params = {
 			"doctype": block.source_doctype,
+			# "fields": query_fields(block.options),
 			"fields": ["*"],
-			"filters": eval(block.filter),
 			'strict': "None"
 		}
+		if (not block.filter is None):
+			query_params["filters"] = eval(block.filter)
+		
 		data = get_data(frappe._dict(query_params))
 		sources = json.dumps(data, default=json_handler)
 		_block = frappe.get_doc("Tianjy Report Block", block.name)
