@@ -5,4 +5,6 @@
 from frappe.model.document import Document
 
 class TianjyReportBlock(Document):
-	pass
+	def before_save(self):
+		if self.is_new():
+			self.reference_block_name = self.name if self.template_block is None else self.template_block
