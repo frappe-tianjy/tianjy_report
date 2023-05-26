@@ -8,6 +8,8 @@ import Pie from './Pie/Pie.vue';
 import PieOption from './Pie/PieOptions.vue';
 import Line from './Line/Line.vue';
 import LineOptions from './Line/LineOptions.vue';
+import TextOptions from './Text/TextOptions.vue';
+import Text from './Text/Text.vue';
 const VALID_CHARTS = ['Number', 'Line', 'Bar', 'Pie', 'Table'];
 
 const WIDGETS = {
@@ -56,15 +58,15 @@ const WIDGETS = {
 		defaultWidth: 12,
 		defaultHeight: 8,
 	},
-	// Text: {
-	// 	type: 'Text',
-	// 	icon: 'align-left',
-	// 	component: defineAsyncComponent(() => import('./Text/Text.vue')),
-	// 	optionsComponent: defineAsyncComponent(() => import('./Text/TextOptions.vue')),
-	// 	options: {},
-	// 	defaultWidth: 10,
-	// 	defaultHeight: 2,
-	// },
+	Text: {
+		type: 'Text',
+		icon: 'align-left',
+		component: Text,
+		optionsComponent: TextOptions,
+		options: {},
+		defaultWidth: 10,
+		defaultHeight: 2,
+	},
 };
 
 const UnknownWidget = {

@@ -15,10 +15,10 @@ export interface ChartOptions{
 
 	}
 export interface ChartProvide extends ChartOptions{
-	load:()=>void,
-	save:()=>void,
-	updateQuery:(doctype:string, filter?:any)=>void,
-	enableAutoSave:()=>void,
-	disableAutoSave:()=>void,
-	delete: ()=>void,
+	load?:()=>void,
+	save?:()=>void,
+	updateQuery?:(doctype:string, filter?:any)=>void,
+	enableAutoSave?:()=>void,
+	disableAutoSave?:()=>void,
+	delete?: ()=>void,
 }

@@ -10,6 +10,7 @@
 				<ElOption value="Table" label="表格"></ElOption>
 				<ElOption value="Pie" label="饼状图"></ElOption>
 				<ElOption value="Line" label="折线图"></ElOption>
+				<ElOption value="Text" label="文本"></ElOption>
 			</ElSelect>
 		</el-form-item>
 		<el-form-item label="过滤器">

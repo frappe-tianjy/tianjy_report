@@ -5,6 +5,7 @@
 				:chartName="node.attrs.chart_name"
 				:data="node.attrs.data"
 				:chart_type="node.attrs.chart_type"
+				:nodeViewProps="props"
 				@setChartName="updateAttributes({ chart_name: $event })"
 				@remove="deleteNode()" />
 		</Suspense>

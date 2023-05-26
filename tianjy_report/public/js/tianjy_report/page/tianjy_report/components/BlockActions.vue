@@ -3,6 +3,7 @@
 		width="180"
 		ref="popoverRef"
 		:virtual-ref="blockRef"
+		:disabled="!editable"
 		trigger="click"
 		virtual-triggering
 		placement="right-start">
@@ -13,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineExpose } from 'vue';
+import { ref, defineExpose, watch } from 'vue';
 
 const props = defineProps({
 	blockRef: Object,
@@ -21,7 +22,9 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
+	editable:Boolean,
 });
+watch(()=>props.editable, ()=>console.log(props.editable), {immediate:true});
 const popoverRef = ref();
 defineExpose({popoverRef});
 </script>

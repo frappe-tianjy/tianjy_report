@@ -1,5 +1,6 @@
 <template>
 	<div class="table-container">
+		<h4 class="title">{{ props.options.title }}</h4>
 		<el-table :data="tableData" style="width: 100%" height="100%">
 			<el-table-column
 				v-for="(col, index) in columns"
@@ -26,7 +27,7 @@ const emit = defineEmits<Emit>();
 const columns = computed(()=>props.options?.columns||[]);
 const tableData = computed(()=>props.data.map(item=>{
 		const d = {};
-		props.options?.columns.forEach(each=>{
+		props.options?.columns?.forEach(each=>{
 			const isLink = each.fieldtype === 'Link'||each.fieldtype === 'Tree Select';
 			d[each.fieldname] = isLink?__(item[`${each.fieldname}.title`]):__(item[each.fieldname]);
 		});
@@ -36,6 +37,13 @@ const tableData = computed(()=>props.data.map(item=>{
 
 <style lang='less' scoped>
 .table-container {
-	height: 100%;
+	height: 20rem;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.25rem;
+	margin: 1.5rem 0;
+}
+
+.title {
+	padding: 4px 8px;
 }
 </style>

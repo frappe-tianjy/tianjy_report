@@ -5,6 +5,7 @@ import { debounce } from 'lodash';
 
 import { ChartOptions, ChartProvide } from '../../type';
 import requestDocList from '../../../../utils/requestDocList';
+export const numberFieldTypes=['Currency', 'Float', 'Int', 'Percent'];
 
 function safeJSONParse(str:string, defaultValue = null) {
 	if (str === null || str === undefined) {
@@ -49,53 +50,57 @@ export async function createChart(reportName:string, mode:string|null) {
 	return res?.name||'';
 }
 
-export default function useChart(name:string, mode:string|null) {
+export default function useChart(initChart:ChartOptions, name:string, mode:string|null) {
 	if (!charts[name]) {
-		charts[name] = getChart(name, mode);
+		charts[name] = getChart(initChart, name, mode);
 	}
 	return charts[name];
 }
 
-function getChart(chartName:string, mode:string|null):ChartProvide {
+function getChart(initChart:ChartOptions, chartName:string, mode:string|null):ChartProvide {
 	const blockType = mode==='template'?'Tianjy Report Template Block':'Tianjy Report Block';
-	const state = reactive<ChartOptions>({
-		data: [],
-		columns: [],
-		loading: false,
-		options: {},
-		autosave: false,
-		deleting:false,
-		doc: {
-			name: undefined,
-			type: undefined,
-			options: {},
-			filter:undefined,
-			source_doctype:undefined,
-		},
-	});
-
+	// const state = reactive<ChartOptions>({
+	// 	data: [],
+	// 	columns: [],
+	// 	loading: true,
+	// 	options: {},
+	// 	autosave: false,
+	// 	deleting:false,
+	// 	doc: {
+	// 		name: undefined,
+	// 		type: undefined,
+	// 		options: {},
+	// 		filter:undefined,
+	// 		source_doctype:undefined,
+	// 	},
+	// });
+	const state = initChart;
 	async function load() {
 		state.loading = true;
-		const block = await frappe.db.get_doc(blockType, chartName);
-		if (block.options){
-			block.options = safeJSONParse(block.options);
-		} else {
-			block.options = {};
-		}
-		state.doc = block;
-		let {filter} = block;
-		if (typeof block.filter === 'string'){
-			filter = frappe.utils.get_filter_from_json(
-				block.filter,
-				state.doc.source_doctype
-			);
-		}
-		state.doc.filter = filter;
-		if (!state.doc.source_doctype) {
+		try {
+			const block = await frappe.db.get_doc(blockType, chartName);
+			if (block.options){
+				block.options = safeJSONParse(block.options);
+			} else {
+				block.options = {};
+			}
+			state.doc = block;
+			let {filter} = block;
+			if (typeof block.filter === 'string'){
+				filter = frappe.utils.get_filter_from_json(
+					block.filter,
+					state.doc.source_doctype
+				);
+			}
+			state.doc.filter = filter;
+			if (!state.doc.source_doctype) {
+				state.loading = false;
+				return;
+			}
+			updateChartData();
+		} catch {
 			state.loading = false;
-			return;
 		}
-		updateChartData();
 	}
 	load();
 
