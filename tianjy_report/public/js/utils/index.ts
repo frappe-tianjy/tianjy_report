@@ -7,14 +7,15 @@ export function createNodeExtension(options) {
 		name,
 		group: rest.group || 'block',
 		atom: rest.atom || true,
+		draggable: true,
 		addAttributes() {
 			return rest.attributes || {};
 		},
 		parseHTML() {
-			return [{ tag }];
+			return [{ tag:`${tag}[data-type="draggable-item"]` }];
 		},
 		renderHTML({ HTMLAttributes }) {
-			return [tag, mergeAttributes(HTMLAttributes)];
+			return [tag, mergeAttributes(HTMLAttributes, { 'data-type': 'draggable-item' })];
 		},
 		addNodeView() {
 			return VueNodeViewRenderer(component);

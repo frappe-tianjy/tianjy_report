@@ -67,11 +67,7 @@
 			</ElButton>
 		</el-tooltip>
 		<el-tooltip content="图表">
-			<ElButton @click="()=>{
-					const element = '<chart></chart>';
-					editor.chain().focus()
-						.insertContent(element)
-						.run();}">
+			<ElButton @click="insertChart">
 				<LineChart :size="16"></LineChart>
 			</ElButton>
 		</el-tooltip>
@@ -125,6 +121,11 @@ function insetImage(){
 			};
 		});
 		input.click();
+}
+function insertChart(){
+	props.editor.chain().focus()
+		.insertContent(`<chart data-type="draggable-item"></chart>`)
+		.run();
 }
 </script>
 

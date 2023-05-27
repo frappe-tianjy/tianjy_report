@@ -122,7 +122,7 @@ export default {
 			title: '图表',
 			icon: markRaw(LineChart),
 			command: ({ editor, range }) => {
-				const element = '<chart></chart>';
+				const element = '<chart data-type="draggable-item"></chart>';
 				editor.chain().focus().deleteRange(range)
 					.insertContent(element)
 					.run();
