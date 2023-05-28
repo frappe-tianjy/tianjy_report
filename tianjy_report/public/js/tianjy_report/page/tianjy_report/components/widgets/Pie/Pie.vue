@@ -42,6 +42,7 @@ const formatOptions = computed(()=>{
 	const formatOptions={
 		title: {
 			text: props.options.title,
+			left:'center',
 		},
 		color:['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
 		type:'Bar',
@@ -53,7 +54,8 @@ const formatOptions = computed(()=>{
 		},
 		legend: {
 			orient: 'vertical',
-			left: 'left',
+			left: 'right',
+			top:'middle',
 		},
 		tooltip: {
 			trigger: 'item',

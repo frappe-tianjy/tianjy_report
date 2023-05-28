@@ -45,12 +45,15 @@ const formatOptions = computed(()=>{
 		};
 	});
 	const legend = {
+		left: 'right',
+		top:'middle',
 		data:yAxisArr.map(item=>__(item.label)),
 	};
 	if (!props.data||xAxisData.length===0){ return {}; }
 	const formatOptions={
 		title: {
 			text: props.options.title,
+			left:'center',
 		},
 		legend,
 		color:['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
