@@ -12,6 +12,7 @@ export interface ChartOptions{
 			source_doctype?:string
 			filter:any,
 			sources:any[]
+			reportBlockName?:string
 		}
 
 	}

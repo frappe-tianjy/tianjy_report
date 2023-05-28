@@ -66,6 +66,7 @@ const chart=reactive<ChartProvide>({
 		filter:undefined,
 		source_doctype:undefined,
 		sources:[],
+		reportBlockName:undefined,
 	},
 });
 

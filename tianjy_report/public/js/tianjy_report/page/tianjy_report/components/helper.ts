@@ -73,6 +73,7 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 					limit:0,
 				});
 				[block] = blocks;
+				state.doc.reportBlockName = block?.name;
 			}
 			if (block.options){
 				block.options = safeJSONParse(block.options);
@@ -177,7 +178,13 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 
 	async function deleteChart() {
 		state.deleting = true;
-		await frappe.db.delete_doc(blockType, chartName);
+		if (mode==='template'){
+			await frappe.db.delete_doc(blockType, chartName);
+		} else {
+			if (!state.doc.reportBlockName){ state.deleting = false; return; }
+			await frappe.db.delete_doc(blockType, state.doc.reportBlockName);
+		}
+
 		state.deleting = false;
 	}
 	return Object.assign(state, {
