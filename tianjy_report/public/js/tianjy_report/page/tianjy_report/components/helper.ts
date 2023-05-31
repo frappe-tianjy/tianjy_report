@@ -178,14 +178,18 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 
 	async function deleteChart() {
 		state.deleting = true;
-		if (mode==='template'){
-			await frappe.db.delete_doc(blockType, chartName);
-		} else {
-			if (!state.doc.reportBlockName){ state.deleting = false; return; }
-			await frappe.db.delete_doc(blockType, state.doc.reportBlockName);
+		try {
+			if (mode==='template'){
+				const res = await frappe.call('frappe.client.delete', { doctype:blockType, name:chartName });
+			} else {
+				if (!state.doc.reportBlockName){ state.deleting = false; return true; }
+				const res = await frappe.call('frappe.client.delete', { doctype:blockType, name:state.doc.reportBlockName });
+			}
+			return true;
+		} catch (e){
+			state.deleting = false;
+			return false;
 		}
-
-		state.deleting = false;
 	}
 	return Object.assign(state, {
 		load,

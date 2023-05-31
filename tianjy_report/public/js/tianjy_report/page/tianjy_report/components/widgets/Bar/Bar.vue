@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, reactive, watch } from 'vue';
+import { computed, ref, onMounted, reactive, watch, onUnmounted } from 'vue';
 
 import * as echarts from 'echarts';
 
@@ -89,9 +89,12 @@ onMounted(() => {
 	chart = echarts.init(chartRef.value, 'light', {
 		renderer: 'canvas',
 	});
+	window.addEventListener('resize', chart.resize);
 	setOption();
 });
-
+onUnmounted(()=>{
+	window.removeEventListener('resize', chart?.resize);
+});
 function valueFormatter(value) {
 	return isNaN(value) ? value : value.toLocaleString();
 }

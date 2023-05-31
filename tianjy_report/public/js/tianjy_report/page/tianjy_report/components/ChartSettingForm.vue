@@ -73,9 +73,11 @@ function changeFilter(v:any){
 	if (!doctype.value){ return; }
 	chart?.updateQuery(doctype.value, v);
 }
-function onDelete(){
-	chart?.delete();
-	emit('remove');
+async function onDelete(){
+	const isSuccess = await chart?.delete?.();
+	if (isSuccess){
+		emit('remove');
+	}
 }
 </script>
 

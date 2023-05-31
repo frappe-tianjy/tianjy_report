@@ -130,4 +130,13 @@ function insertChart(){
 </script>
 
 <style lang='less' scoped>
+.tools {
+	display: flex;
+	flex-flow: wrap;
+	align-items: center;
+
+	button {
+		margin: 5px;
+	}
+}
 </style>

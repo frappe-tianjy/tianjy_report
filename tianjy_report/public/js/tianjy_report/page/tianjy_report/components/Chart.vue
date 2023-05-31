@@ -7,7 +7,7 @@
 			draggable="true"
 			data-drag-handle
 			:size="16"></GripVertical>
-		<node-view-content class="content">
+		<div class="content">
 			<Suspense>
 				<ChartBlock
 					:chartName="node.attrs.chart_name"
@@ -18,7 +18,7 @@
 					@setChartName="updateAttributes({ chart_name: $event })"
 					@remove="deleteNode()" />
 			</Suspense>
-		</node-view-content>
+		</div>
 	</node-view-wrapper>
 </template>
 
@@ -32,7 +32,7 @@ import { GripVertical} from 'lucide-vue-next';
 import ChartBlock from './ChartBlock.vue';
 
 const props = defineProps(nodeViewProps);
-const isEditable = ref<boolean>(false);
+const isEditable = ref<boolean>(props.editor.isEditable);
 props.editor.on('update', ({ editor }) => {
   isEditable.value = props.editor.isEditable;
 });

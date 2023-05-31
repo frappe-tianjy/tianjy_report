@@ -13,7 +13,8 @@
 					@click="persistent">持久化</ElButton>
 			</div>
 		</div>
-		<Tools v-if="!isPersistence&&edit" :editor="editor"></Tools>
+		<Tools v-if="(mode==='report'&&edit&&!isPersistence)||(mode==='template')"
+			:editor="editor"></Tools>
 		<div class="container editor-container">
 			<editor-content :editor="editor" class="editor" />
 		</div>
@@ -175,7 +176,7 @@ function setEdit(){
 }
 
 .container {
-	width: 50rem;
+	max-width: 50rem;
 	margin: 0 auto;
 	background: #fff;
 }
