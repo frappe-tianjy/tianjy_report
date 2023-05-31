@@ -27,6 +27,12 @@
 					</ElOption>
 				</ElSelect>
 			</el-form-item>
+			<el-form-item label="x轴名称" prop="xLabel">
+				<el-input v-model="form.xLabel" @change="changeXLabel" />
+			</el-form-item>
+			<el-form-item label="y轴名称" prop="yLabel">
+				<el-input v-model="form.yLabel" @change="changeYLabel" />
+			</el-form-item>
 		</el-form>
 	</div>
 </template>
@@ -56,12 +62,17 @@ const form = reactive({
   title: chart?.doc.options?.title,
   xAxis:chart?.doc.options?.xAxis?.fieldname,
   yAxis:chart?.doc.options?.yAxis?.map(item=>item.fieldname),
+  xLabel: chart?.doc.options?.xLabel,
+  yLabel: chart?.doc.options?.yLabel,
+
 });
 
 watch(()=>chart?.doc.options, ()=>{
 	form.title = chart?.doc.options?.title;
 	form.xAxis = chart?.doc.options?.xAxis?.fieldname;
 	form.yAxis = chart?.doc.options?.yAxis?.map(item=>item.fieldname);
+	form.xLabel = chart?.doc.options?.xLabel;
+	form.yLabel = chart?.doc.options?.yLabel;
 });
 
 const rules = reactive<FormRules>({
@@ -95,7 +106,14 @@ function changeTitle(value:string){
 	if (!chart){ return; }
 	chart.doc.options.title =value;
 }
-
+function changeXLabel(value:string){
+	if (!chart){ return; }
+	chart.doc.options.xLabel =value;
+}
+function changeYLabel(value:string){
+	if (!chart){ return; }
+	chart.doc.options.yLabel =value;
+}
 function changeX(v:string){
 	if (!chart){ return; }
 	const xAxis = fields.value.find(item=>item.fieldname === form.xAxis);

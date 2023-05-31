@@ -53,9 +53,7 @@ const formatOptions = computed(()=>{
 			},
 		},
 		legend: {
-			orient: 'vertical',
-			left: 'right',
-			top:'middle',
+			top:'bottom',
 		},
 		tooltip: {
 			trigger: 'item',
