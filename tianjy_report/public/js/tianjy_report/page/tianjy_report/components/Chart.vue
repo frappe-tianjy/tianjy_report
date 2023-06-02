@@ -1,35 +1,41 @@
 <template>
-	<node-view-wrapper :class="{'draggable-item':editor.isEditable}">
+	<node-view-wrapper :class="{'draggable-item':isEditable}">
 		<GripVertical
-			v-if="editor.isEditable"
+			v-if="isEditable"
 			class="drag-handle"
 			contenteditable="false"
 			draggable="true"
 			data-drag-handle
 			:size="16"></GripVertical>
-		<node-view-content class="content">
+		<div class="content">
 			<Suspense>
 				<ChartBlock
 					:chartName="node.attrs.chart_name"
 					:data="node.attrs.data"
 					:chart_type="node.attrs.chart_type"
+					:isEditable="isEditable"
 					:nodeViewProps="props"
 					@setChartName="updateAttributes({ chart_name: $event })"
 					@remove="deleteNode()" />
 			</Suspense>
-		</node-view-content>
+		</div>
 	</node-view-wrapper>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
+import { ref } from 'vue';
 
-import { NodeViewWrapper, nodeViewProps } from '@tiptap/vue-3';
+import { NodeViewWrapper, nodeViewProps} from '@tiptap/vue-3';
 import { GripVertical} from 'lucide-vue-next';
 
 import ChartBlock from './ChartBlock.vue';
 
 const props = defineProps(nodeViewProps);
+const isEditable = ref<boolean>(props.editor.isEditable);
+props.editor.on('update', ({ editor }) => {
+  isEditable.value = props.editor.isEditable;
+});
 </script>
 <style scoped lang="less">
 .draggable-item {

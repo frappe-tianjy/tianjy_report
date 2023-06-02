@@ -2,11 +2,19 @@
 	<div v-loading="loading">
 		<div class="title container">
 			<h3>{{ subject }}</h3>
-			<ElButton type="primary" v-if="mode==='report'&&isPersistence===false"
-				class="persis-btn"
-				@click="persistent">持久化</ElButton>
+			<div>
+				<ElButton type="primary"
+					v-if="mode==='report'&&isPersistence===false&&writePermission"
+					class="persis-btn"
+					@click="setEdit">{{edit?'查看':'编辑'}}</ElButton>
+				<ElButton type="primary"
+					v-if="mode==='report'&&isPersistence===false"
+					class="persis-btn"
+					@click="persistent">持久化</ElButton>
+			</div>
 		</div>
-		<Tools v-if="!isPersistence" :editor="editor"></Tools>
+		<Tools v-if="(mode==='report'&&edit&&!isPersistence)||(mode==='template')"
+			:editor="editor"></Tools>
 		<div class="container editor-container">
 			<editor-content :editor="editor" class="editor" />
 		</div>
@@ -56,6 +64,8 @@ const loaded = ref<boolean>(false);
 const loading = ref<boolean>(true);
 
 const isPersistence=ref<boolean>(false);
+const edit = ref<boolean>(false);
+const writePermission = ref<boolean>(false);
 provide('isPersistence', isPersistence);
 const reportType =computed(()=>mode==='template'?'Tianjy Report Template':'Tianjy Report');
 
@@ -65,8 +75,11 @@ function saveLayout(json:any){
 }
 const updateLayout = debounce(saveLayout, 500);
 
+frappe.model.with_doctype('Tianjy Report', () => {
+	writePermission.value = frappe.perm.has_perm('Tianjy Report', 0, 'write');
+});
 const editor = useEditor({
-		onUpdate: ({ editor }) => {
+		onUpdate: ({ editor }:{editor:any}) => {
 			const json = editor.getJSON();
 			if (!loaded.value){ return; }
 			updateLayout(json);
@@ -89,7 +102,7 @@ const editor = useEditor({
 			TableHeader,
 			TableCell,
 			Placeholder.configure({
-				placeholder: ({ node }) => {
+				placeholder: ({ node }:{node:any}) => {
 					if (node.type.name === 'heading') {
 						return `Heading ${node.attrs.level-1}`;
 					}
@@ -115,7 +128,8 @@ watch([()=>reportName, ()=>mode], async()=>{
 	const res:{layout?:string, subject:string, is_persistence?:0|1, } = await frappe.db.get_doc(reportType.value, reportName );
 	content.value = JSON.parse(res.layout||'{}');
 	subject.value = res.subject;
-	editor.value.setEditable(res.is_persistence?.toString()!=='1');
+	const editable = mode==='template';
+	editor.value.setEditable(editable);
 	isPersistence.value = res.is_persistence?.toString()==='1';
 	loaded.value=true;
 	loading.value=false;
@@ -141,6 +155,10 @@ async function persistent(){
 	a.click();
 	loading.value=false;
 }
+function setEdit(){
+	edit.value = !edit.value;
+	editor.value.setEditable(edit.value);
+}
 </script>
 
 <style lang='less' scoped>
@@ -158,7 +176,7 @@ async function persistent(){
 }
 
 .container {
-	width: 50rem;
+	max-width: 50rem;
 	margin: 0 auto;
 	background: #fff;
 }

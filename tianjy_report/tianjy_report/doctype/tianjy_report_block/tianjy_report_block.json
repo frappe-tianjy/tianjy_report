@@ -42,7 +42,7 @@
   },
   {
    "fieldname": "template_block",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Tianjy Report Template Block",
    "options": "Tianjy Report Template Block"
   },

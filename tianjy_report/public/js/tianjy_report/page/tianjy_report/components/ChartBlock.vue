@@ -21,7 +21,7 @@
 		</div>
 	</div>
 	<div>
-		<BlockActions :editable="nodeViewProps.editor.isEditable"
+		<BlockActions :editable="isEditable"
 			:blockRef="blockRef" ref="actionsRef">
 			<ChartSettingForm @remove="emit('remove')"></ChartSettingForm>
 		</BlockActions>
@@ -43,6 +43,7 @@ const emit = defineEmits(['setChartName', 'remove']);
 interface Props{
 	chartName?: string
 	nodeViewProps:any
+	isEditable:boolean
 }
 const props = defineProps<Props>();
 

@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, reactive, watch } from 'vue';
+import { computed, ref, onMounted, reactive, watch, onUnmounted } from 'vue';
 
 import * as echarts from 'echarts';
 
@@ -17,20 +17,22 @@ let chart:any = null;
 
 const formatOptions = computed(()=>{
 	const xAxisF = props.options.xAxis?.fieldname;
+	const xLabelOption = props.options.xLabel;
+	const yLabelOption = props.options.yLabel;
 	const xAxisData = (props.data||[])?.map(item=>{
 		const isLink = props.options.xAxis?.fieldtype === 'Link'||props.options.xAxis?.fieldtype === 'Tree Select';
 		return isLink?__(item[`${xAxisF}.title`]):__(item[xAxisF]);
 	});
 	const xAxis = {
                     'type': 'category',
-					'name': __(props.options.xAxis?.label||'x轴'),
+					'name': __(xLabelOption||props.options.xAxis?.label||'x轴'),
                     'data': xAxisData,
                 };
 	const yAxisArr = props.options.yAxis||[];
 	const yLabel = yAxisArr.length===1?yAxisArr[0]?.label:'';
 	const yAxis = {
 		'type': 'value',
-		'name': __(yLabel||'值'),
+		'name': __(yLabelOption||yLabel||'值'),
 	};
 	const series = yAxisArr.map(yAxisF=>{
 		const data=(props.data||[]).map(item=>item[yAxisF.fieldname]);
@@ -45,8 +47,7 @@ const formatOptions = computed(()=>{
 		};
 	});
 	const legend = {
-		left: 'right',
-		top:'middle',
+		top:'bottom',
 		data:yAxisArr.map(item=>__(item.label)),
 	};
 	if (!props.data||xAxisData.length===0){ return {}; }
@@ -89,9 +90,12 @@ onMounted(() => {
 	chart = echarts.init(chartRef.value, 'light', {
 		renderer: 'canvas',
 	});
+	window.addEventListener('resize', chart.resize);
 	setOption();
 });
-
+onUnmounted(()=>{
+	window.removeEventListener('resize', chart?.resize);
+});
 function valueFormatter(value) {
 	return isNaN(value) ? value : value.toLocaleString();
 }
