@@ -8,6 +8,7 @@ from frappe.model.document import Document
 from frappe.desk.reportview import get_form_params, compress, execute
 from frappe.model.utils import is_virtual_doctype
 from frappe.utils.response import json_handler
+from frappe.integrations.utils import make_post_request
 
 class TianjyReport(Document):
 	def before_save(self):
@@ -41,18 +42,16 @@ def get_data(args):
 	else:
 		data = compress(execute(**args), args=args)
 	return data
-		
-def get_fields(obj, arr):
-	for key, value in obj.items():
-		if (key in ('xAxis','yAxis','columns')):
-			arr.append(value)
-		else:
-			get_fields(value, arr)
 
-def query_fields(options):
+def get_query_fields(options):
 	opt = eval(options)
 	fields = []
-	get_fields(opt, fields)
+	for key, value in opt.items():
+		if (key in ('xAxis','yAxis')):
+			fields.append(value)
+		if (key in ('columns', 'fields')):
+			fields.extend(value)
+			
 	for field in sum(fields,[]):
 			fields.append(field["fieldname"])
 			if field["fieldtype"] == "link":
@@ -68,7 +67,6 @@ def source_persistence(report_name, persistence_state):
 	report = frappe.get_doc("Tianjy Report", report_name)
 	if not frappe.has_permission("Tianjy Report", "write"):
 		return
-
 	report.set("is_persistence", persistence_state)
 	report.save()
 	blocks = frappe.get_list("Tianjy Report Block",
@@ -77,23 +75,25 @@ def source_persistence(report_name, persistence_state):
 		limit = 0
 	)
 	for block in blocks:
-		query_params = {
-			"doctype": block.source_doctype,
-			# "fields": query_fields(block.options),
-			"fields": ["*"],
-			'strict': "None"
-		}
-		if (not block.filter is None):
-			query_params["filters"] = eval(block.filter)
-		
-		data = get_data(frappe._dict(query_params))
-		sources = json.dumps(data, default=json_handler)
 		_block = frappe.get_doc("Tianjy Report Block", block.name)
 		if persistence_state == "1":
+			filters = [] if (block.filter is None) else eval(block.filter)
+			print(11111)
+			print(block.options)
+			block_fields = sum(get_query_fields(block.options),[])
+			fields = ['*'] if len(block_fields) == 0 else block_fields
+			query_params = {
+				'doctype': block.source_doctype,
+				'fields': fields,
+				'filters': filters,
+				'strict': "None"
+			}
+			data = get_data(frappe._dict(query_params))
+			sources = json.dumps(data, default=json_handler)
+
 			_block.set('sources', sources)
 		else:
 			_block.set('sources', {})
 
-		print(_block.sources)
 		_block.save()
 

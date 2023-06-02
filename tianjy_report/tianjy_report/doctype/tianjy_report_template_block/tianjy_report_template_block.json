@@ -29,8 +29,7 @@
   {
    "fieldname": "options",
    "fieldtype": "JSON",
-   "label": "Options",
-   "read_only": 1
+   "label": "Options"
   },
   {
    "fieldname": "report_template",
@@ -46,13 +45,12 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Source DocType",
-   "options": "DocType",
-   "read_only": 1
+   "options": "DocType"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-25 17:09:35.774780",
+ "modified": "2023-06-02 21:13:37.254359",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report Template Block",

@@ -7,6 +7,7 @@ Tianjy Report Category, 报告类别
 
 Layout, 布局
 Is Persistence, 是否持久化
+Persistence Error., 持久化失败，请联系管理员。
 Data Source Persistence, 数据持久化
 Data Source Cancel Persistence, 取消数据持久化
 Source DocType, 数据源单据
