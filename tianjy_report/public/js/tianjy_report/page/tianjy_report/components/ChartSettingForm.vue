@@ -10,12 +10,15 @@
 					<ElOption value="Line" label="折线图"></ElOption>
 					<ElOption value="Text" label="文本"></ElOption>
 					<ElOption value="System Chart" label="系统图表"></ElOption>
+					<ElOption value="Text Editor" label="富文本"></ElOption>
 				</ElSelect>
 			</el-form-item>
-			<el-form-item label="单据" v-if="chartType!=='System Chart'">
+			<el-form-item label="单据"
+				v-if="chartType!=='System Chart'&&chartType!=='Text Editor'">
 				<DocSelect v-model="doctype" @change="changeDoctype"></DocSelect>
 			</el-form-item>
-			<el-form-item label="过滤器" v-if="chartType!=='System Chart'">
+			<el-form-item label="过滤器"
+				v-if="chartType!=='System Chart'&&chartType!=='Text Editor'">
 				<Filter v-model="filter" :options="doctype"
 					@change="changeFilter"></Filter>
 			</el-form-item>

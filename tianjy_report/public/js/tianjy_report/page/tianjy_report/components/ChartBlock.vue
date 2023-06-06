@@ -7,6 +7,7 @@
 			:is="widgets.getComponent(chart?.doc?.type)"
 			:data="chart?.data"
 			:options="chart?.doc.options"
+			:isEditable="isEditable"
 			:key="JSON.stringify([chart?.data])">
 			<template #placeholder>
 				<div class="relative h-full w-full">
@@ -78,7 +79,7 @@ function onClickOutside () {
 const isShowChart = computed(()=>{
 	const type = chart?.doc?.type;
 	const source_doctype = chart?.doc?.source_doctype;
-	return type==='System Chart'||(type&&source_doctype);
+	return type==='Text Editor'||type==='System Chart'||(type&&source_doctype);
 });
 function getTimeout(infoEntry: IntersectionObserverEntry) {
     setTimeout(async () => {

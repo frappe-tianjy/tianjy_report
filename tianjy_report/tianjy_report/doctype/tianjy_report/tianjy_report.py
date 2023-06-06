@@ -85,6 +85,13 @@ def source_persistence(report_name, persistence_state):
         if persistence_state == "1":
             if _block.type == 'System Chart':
                 continue
+            if _block.type == 'Text Editor':
+                opt = eval(block.options)
+                if 'data' in opt.keys():
+                    sources = json.dumps(opt['data'], default=json_handler)
+                    _block.set('sources', sources)
+                _block.save()
+                continue
             filters = [] if (block.filter is None) else eval(block.filter)
             print(11111)
             print(block.options)
