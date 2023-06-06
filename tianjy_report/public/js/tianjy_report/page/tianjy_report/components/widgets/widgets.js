@@ -10,7 +10,10 @@ import Line from './Line/Line.vue';
 import LineOptions from './Line/LineOptions.vue';
 import TextOptions from './Text/TextOptions.vue';
 import Text from './Text/Text.vue';
-const VALID_CHARTS = ['Number', 'Line', 'Bar', 'Pie', 'Table'];
+import SystemChart from './SystemChart/SystemChart.vue';
+import SystemChartOption from './SystemChart/SystemChartOption.vue';
+
+const VALID_CHARTS = ['Number', 'Line', 'Bar', 'Pie', 'Table', 'SystemChart'];
 
 const WIDGETS = {
 	// Number: {
@@ -63,6 +66,15 @@ const WIDGETS = {
 		icon: 'align-left',
 		component: Text,
 		optionsComponent: TextOptions,
+		options: {},
+		defaultWidth: 10,
+		defaultHeight: 2,
+	},
+	'System Chart': {
+		type: 'System Chart',
+		icon: 'align-left',
+		component: SystemChart,
+		optionsComponent: SystemChartOption,
 		options: {},
 		defaultWidth: 10,
 		defaultHeight: 2,

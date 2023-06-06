@@ -2,7 +2,7 @@
 	<div v-loading="chart?.loading" class="chart-container" ref="blockRef"
 		v-click-outside="onClickOutside">
 		<component
-			v-if="type&&source_doctype"
+			v-if="isShowChart"
 			ref="widget"
 			:is="widgets.getComponent(chart?.doc?.type)"
 			:data="chart?.data"
@@ -75,9 +75,11 @@ provide('chart', chart);
 function onClickOutside () {
 	actionsRef.value?.popoverRef?.delayHide?.();
 }
-
-const type=computed(()=>chart?.doc?.type);
-const source_doctype=computed(()=>chart?.doc?.source_doctype);
+const isShowChart = computed(()=>{
+	const type = chart?.doc?.type;
+	const source_doctype = chart?.doc?.source_doctype;
+	return type==='System Chart'||(type&&source_doctype);
+});
 function getTimeout(infoEntry: IntersectionObserverEntry) {
     setTimeout(async () => {
 		if (!props.chartName) {
