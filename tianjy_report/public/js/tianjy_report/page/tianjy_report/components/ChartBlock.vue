@@ -41,10 +41,10 @@ import widgets from './widgets/widgets';
 import BlockActions from './BlockActions.vue';
 import ChartSettingForm from './ChartSettingForm.vue';
 const emit = defineEmits(['setChartName', 'remove']);
-interface Props{
+interface Props {
 	chartName?: string
-	nodeViewProps:any
-	isEditable:boolean
+	nodeViewProps: any
+	isEditable: boolean
 }
 const props = defineProps<Props>();
 
@@ -54,37 +54,37 @@ const searchParams = new URLSearchParams(location.search);
 const reportName = searchParams.get('name');
 const mode = searchParams.get('mode');
 const isPersistence = inject('isPersistence');
-const chart=reactive<ChartProvide>({
+const chart = reactive<ChartProvide>({
 	data: [],
 	columns: [],
 	loading: true,
 	options: {},
 	autosave: false,
-	deleting:false,
+	deleting: false,
 	doc: {
 		name: undefined,
 		type: undefined,
 		options: {},
-		filter:undefined,
-		source_doctype:undefined,
-		sources:[],
-		reportBlockName:undefined,
+		filter: undefined,
+		source_doctype: undefined,
+		sources: [],
+		reportBlockName: undefined,
 	},
 });
 
 provide('chart', chart);
-function onClickOutside () {
+function onClickOutside() {
 	actionsRef.value?.popoverRef?.delayHide?.();
 }
-const isShowChart = computed(()=>{
+const isShowChart = computed(() => {
 	const type = chart?.doc?.type;
 	const source_doctype = chart?.doc?.source_doctype;
-	return type==='Text Editor'||type==='System Chart'||(type&&source_doctype);
+	return type === 'Text Editor' || type === 'System Chart' || (type && source_doctype);
 });
 function getTimeout(infoEntry: IntersectionObserverEntry) {
-    setTimeout(async () => {
+	setTimeout(async () => {
 		if (!props.chartName) {
-			const chartName = await createChart(reportName||'', mode);
+			const chartName = await createChart(reportName || '', mode);
 			emit('setChartName', chartName);
 			const getChart = useChart(chart, reportName, chartName, mode, isPersistence.value);
 			Object.assign(chart, getChart);
@@ -92,29 +92,35 @@ function getTimeout(infoEntry: IntersectionObserverEntry) {
 			const getChart = useChart(chart, reportName, props.chartName, mode, isPersistence.value);
 			Object.assign(chart, getChart);
 		}
-		chart?.enableAutoSave?.();
-    }, 500);
+		const blockType = mode === 'template' ? 'Tianjy Report Template Block' : 'Tianjy Report Block';
+		frappe.model.with_doctype(blockType, () => {
+			const hasWrite = frappe.perm.has_perm(blockType, 0, 'write');
+			if (hasWrite) {
+				chart?.enableAutoSave?.();
+			}
+		});
+	}, 500);
 }
 
 function observerCallback(entries: IntersectionObserverEntry[]) {
-      entries.reverse().forEach(entry => {
-        if (entry.isIntersecting) {
-          location.hash=`#${entry.target.id}`;
-          getTimeout(entry);
-        } else {
-        }
-      });
+	entries.reverse().forEach(entry => {
+		if (entry.isIntersecting) {
+			location.hash = `#${entry.target.id}`;
+			getTimeout(entry);
+		} else {
+		}
+	});
 }
 
 const observer = new IntersectionObserver(observerCallback, {
-      threshold: 0.1,
-      root: document.body,
+	threshold: 0.1,
+	root: document.body,
 });
 
-watch(blockRef, ()=>{
-	if (!blockRef.value){ return; }
+watch(blockRef, () => {
+	if (!blockRef.value) { return; }
 	observer.observe(blockRef.value);
-}, {deep:true});
+}, { deep: true });
 
 </script>
 <style scoped lang="less">
