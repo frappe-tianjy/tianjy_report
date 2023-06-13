@@ -83,7 +83,7 @@ const formatOptions = computed(()=>{
 });
 watch(formatOptions, setOption, { deep: true });
 function setOption() {
-	chart?.setOption(formatOptions.value);
+	chart?.setOption(formatOptions.value, true);
 }
 
 onMounted(() => {
