@@ -104,7 +104,7 @@ function changeX(v:string){
 function changeY(v:string){
 	if (!chart){ return; }
 	const yAxis = fields.value.find(item=>item.fieldname === form.yAxis);
-	chart.doc.options.yAxis = {label:yAxis?.label, fieldname:yAxis?.fieldname, fieldtype:yAxis?.fieldtype};
+	chart.doc.options.yAxis = [{label:yAxis?.label, fieldname:yAxis?.fieldname, fieldtype:yAxis?.fieldtype}];
 }
 
 </script>

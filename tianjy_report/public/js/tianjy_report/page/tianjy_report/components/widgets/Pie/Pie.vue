@@ -17,7 +17,7 @@ let chart:any = null;
 
 const formatOptions = computed(()=>{
 	const xAxisF = props.options.xAxis?.fieldname;
-	const yAxisF = props.options.yAxis?.fieldname;
+	const yAxisF = props.options.yAxis?.[0]?.fieldname;
 	const series = [{
 		'type': 'pie',
 		radius:'50%',
