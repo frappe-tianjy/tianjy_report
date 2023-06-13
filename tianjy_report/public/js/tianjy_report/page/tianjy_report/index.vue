@@ -1,8 +1,10 @@
 <template>
 	<div v-loading="loading">
 		<div class="title container">
-			<h3>{{ subject }}</h3>
-			<div>
+			<ElTooltip :content="subject">
+				<h3 class="subject">{{ subject }}</h3>
+			</ElTooltip>
+			<div class="btn-container">
 				<ElButton type="primary"
 					v-if="mode==='report'&&isPersistence===false&&writePermission"
 					class="persis-btn"
@@ -172,6 +174,13 @@ function setEdit(){
 
 	h3 {
 		margin: 0;
+		word-break: break-all;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
+	}
+	.btn-container{
+		display: flex;
 	}
 }
 
