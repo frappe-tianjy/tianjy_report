@@ -15,6 +15,7 @@ const chartRef = ref<HTMLDivElement|null>(null);
 watch([props.options, chartRef], ()=>{
 	if (!props.options.chart){ return; }
 	if (!chartRef.value){ return; }
+	$(chartRef.value).empty();
 	frappe.widget.make_widget({
 			chart_name:props.options.chart,
 			widget_type: 'chart',
