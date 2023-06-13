@@ -66,6 +66,7 @@ watch(()=>chart?.doc.type, ()=>{
 
 function changeDoctype(v:string){
 	if (!chart){ return; }
+	chart.doc.options = {};
 	chart?.updateQuery(v);
 }
 

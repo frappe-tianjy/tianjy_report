@@ -73,7 +73,6 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 					limit:0,
 				});
 				[block] = blocks;
-				state.doc.reportBlockName = block?.name;
 			}
 			if (block.options){
 				block.options = safeJSONParse(block.options);
@@ -81,6 +80,7 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 				block.options = {};
 			}
 			state.doc = block;
+			state.doc.reportBlockName = block?.name;
 			if (block.sources){
 				const objSources = safeJSONParse(block.sources);
 				const sources = !Array.isArray(objSources)
@@ -119,7 +119,8 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 				const meta = frappe.get_meta(state.doc.source_doctype);
 				if (!meta){ return; }
 				const notValueField = ['HTML Editor', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor',
-				'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Button', 'Fold', 'Connection Table', 'Table', 'Table MultiSelect' ];
+				'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Button', 'Fold', 'Connection Table', 'Table', 'Table MultiSelect',
+			'Image', 'Attach', 'Attach Image' ];
 				await loadLinkDocTypes(meta);
 				const fields:[string, string][] = meta.fields
 					.filter(f=>!notValueField.includes(f.fieldtype)).map(f=>[f.fieldname, meta.name]);
@@ -152,7 +153,7 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 		state.doc.source_doctype = doctype;
 		state.doc.filter = filter||[];
 		const filterJson = frappe.utils.get_filter_as_json(filter||[]);
-		await frappe.db.set_value(blockType, chartName, {
+		await frappe.db.set_value(blockType, mode==='template'?chartName:state.doc.reportBlockName, {
 			source_doctype:doctype,
 			filter:filterJson,
 		});
