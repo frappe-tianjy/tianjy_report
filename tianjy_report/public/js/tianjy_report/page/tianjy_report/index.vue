@@ -17,7 +17,7 @@
 		</div>
 		<Tools v-if="(mode==='report'&&edit&&!isPersistence)||(mode==='template')"
 			:editor="editor"></Tools>
-		<div class="container editor-container">
+		<div class="container editor-container ck-content">
 			<editor-content :editor="editor" class="editor" />
 		</div>
 	</div>
@@ -179,7 +179,8 @@ function setEdit(){
 		overflow: hidden;
 		white-space: nowrap;
 	}
-	.btn-container{
+
+	.btn-container {
 		display: flex;
 	}
 }
