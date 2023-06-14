@@ -30,6 +30,17 @@ const formatOptions = computed(()=>{
 			};
 			return data;
 		}),
+		label:{
+			normal:{
+				show:true,
+				position:'inner',
+				textStyle : {
+					fontWeight : 300,
+					fontSize : 12,
+				},
+				formatter:'{d}%',
+            },
+		},
 		emphasis: {
 			itemStyle: {
 			shadowBlur: 10,
