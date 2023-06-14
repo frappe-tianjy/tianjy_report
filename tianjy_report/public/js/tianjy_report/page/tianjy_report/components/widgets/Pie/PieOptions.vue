@@ -37,8 +37,7 @@ import { ref, defineProps, defineEmits, reactive, watch, inject, Ref, computed }
 import type { FormInstance, FormRules } from 'element-plus';
 
 import { ChartOptions, ChartProvide } from '../../../../type';
-import { numberFieldTypes } from '../../helper';
-const notValueField = ['HTML Editor', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor', 'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Connection Table'];
+import { numberFieldTypes, notValueField } from '../../helper';
 
 const formRef = ref<FormInstance>();
 const tt=__;

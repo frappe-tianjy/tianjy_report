@@ -6,6 +6,7 @@ import { debounce } from 'lodash';
 import { ChartOptions, ChartProvide } from '../../type';
 import requestDocList from '../../../../utils/requestDocList';
 export const numberFieldTypes=['Currency', 'Float', 'Int', 'Percent'];
+export const notValueField = ['HTML', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor', 'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Connection Table', 'Table', 'Barcode', 'Button', 'Geolocation', 'Heading', 'JSON', 'Signature', 'Table MultiSelect', 'Filter', 'Excel'];
 
 function safeJSONParse(str:string, defaultValue = null) {
 	if (str === null || str === undefined) {
