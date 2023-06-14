@@ -22,6 +22,7 @@ const filterIns = ref();
 
 function createFilterCom(){
 	if (!props.options){ return; }
+	if (!filerRef.value){ return; }
 	$(filerRef.value).empty();
 	filterIns.value = new frappe.ui.FilterGroup({
 		parent: $(filerRef.value),
@@ -35,15 +36,25 @@ function createFilterCom(){
 	});
 }
 
+watch(filerRef, ()=>{
+	if (!filerRef.value){ return; }
+	createFilterCom();
+});
+
 watch([()=>props.options, ()=>props.modelValue], ()=>{
 	if (!props.options){ return; }
 	if (!filterIns.value||filterIns.value.doctype!==props.options){
 		createFilterCom();
 	}
+	if (!filterIns.value){ return; }
 	let filter = props.modelValue;
-	if (typeof props.modelValue === 'string'){
+	if (frappe.utils.get_filter_as_json(filter||[]) === frappe.utils.get_filter_as_json(filterIns.value.get_filters()||[])){
+		return;
+	}
+	filter = frappe.utils.get_filter_as_json(filter);
+	if (typeof filter === 'string'){
 		filter = frappe.utils.get_filter_from_json(
-			props.modelValue,
+			filter,
 			props.options
 		);
 	}

@@ -5,7 +5,6 @@
 			:remoteMethod="search" :placeholder="label && tt(label)"
 			@focus="focus"
 			defaultFirstOption
-			:teleported="false"
 			:loading="loading || waiting">
 			<ElOption
 				v-for="{ value, label, description } in opts"

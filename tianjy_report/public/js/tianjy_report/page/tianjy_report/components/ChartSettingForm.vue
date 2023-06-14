@@ -2,7 +2,7 @@
 	<div class="form">
 		<ElForm label-position="top" @submit.prevent>
 			<el-form-item label="图表类型">
-				<ElSelect v-model="chartType" :teleported="false"
+				<ElSelect v-model="chartType"
 					@change="changeType">
 					<ElOption value="Bar" label="柱状图"></ElOption>
 					<ElOption value="Table" label="表格"></ElOption>
@@ -56,13 +56,13 @@ const chartType = ref<string>();
 const filter = ref<any>();
 watch(()=>chart?.doc.filter, ()=>{
 	filter.value = chart?.doc.filter;
-});
+}, {immediate:true});
 watch(()=>chart?.doc.source_doctype, ()=>{
 	doctype.value = chart?.doc.source_doctype||'';
-});
+}, {immediate:true});
 watch(()=>chart?.doc.type, ()=>{
 	chartType.value = chart?.doc.type||'';
-});
+}, {immediate:true});
 
 function changeDoctype(v:string){
 	if (!chart){ return; }

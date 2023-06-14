@@ -15,6 +15,7 @@
 					@click="persistent">持久化</ElButton>
 			</div>
 		</div>
+		<div ref="testRef"></div>
 		<Tools v-if="(mode==='report'&&edit&&!isPersistence)||(mode==='template')"
 			:editor="editor"></Tools>
 		<div class="container editor-container ck-content">
@@ -68,6 +69,20 @@ const loading = ref<boolean>(true);
 const isPersistence=ref<boolean>(false);
 const edit = ref<boolean>(false);
 const writePermission = ref<boolean>(false);
+const testRef = ref();
+const filterIns = ref();
+
+watch(testRef, ()=>{
+	if (!testRef.value){ return; }
+	filterIns.value = new frappe.ui.FilterGroup({
+		parent: $(testRef.value),
+		doctype: 'Guigu Scrum Requirement',
+		on_change: () => {
+			let filters = filterIns.value.get_filters();
+		},
+		base_list:undefined,
+	});
+});
 provide('isPersistence', isPersistence);
 const reportType =computed(()=>mode==='template'?'Tianjy Report Template':'Tianjy Report');
 

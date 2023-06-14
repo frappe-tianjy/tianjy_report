@@ -1,14 +1,17 @@
 <template>
 	<el-popover
 		:popper-style="{'maxWidth':'450px', 'width':'auto', 'maxHeight':'90%', 'overflowY':'auto'}"
-		ref="popoverRef"
-		:virtual-ref="blockRef"
-		:disabled="!editable"
+		:visible="visible"
 		trigger="click"
-		virtual-triggering
-		offset="-5"
+		:offset="-5"
 		placement="right-start">
+		<template #reference>
+			<Settings class="setting" @click="clickSetting" :size="16"></Settings>
+		</template>
 		<div>
+			<div class="header">
+				<X class="close" :size="16" @click="close"></X>
+			</div>
 			<slot />
 		</div>
 	</el-popover>
@@ -17,15 +20,30 @@
 <script setup lang="ts">
 import { ref, defineExpose, watch } from 'vue';
 
+import { Settings, X} from 'lucide-vue-next';
+
 const props = defineProps({
-	blockRef: Object,
-	actions: {
-		type: Array,
-		default: () => [],
-	},
 	editable:Boolean,
 });
-watch(()=>props.editable, ()=>console.log(props.editable), {immediate:true});
-const popoverRef = ref();
-defineExpose({popoverRef});
+const visible = ref<boolean>(false);
+function clickSetting(){
+	visible.value = !visible.value;
+}
+function close(){
+	visible.value=false;
+}
 </script>
+<style scoped lang="less">
+.header {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.setting {
+	cursor: pointer;
+}
+
+.close {
+	cursor: pointer;
+}
+</style>

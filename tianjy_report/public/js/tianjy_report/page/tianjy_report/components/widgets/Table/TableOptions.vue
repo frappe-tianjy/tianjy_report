@@ -10,7 +10,7 @@
 				<el-input v-model="form.title" @change="changeTitle" />
 			</el-form-item>
 			<el-form-item label="列" prop="columns">
-				<ElSelect v-model="form.columns" :teleported="false" multiple
+				<ElSelect v-model="form.columns" multiple
 					@change="changeColumns">
 					<ElOption v-for="f in fields"
 						:value="f.fieldname"

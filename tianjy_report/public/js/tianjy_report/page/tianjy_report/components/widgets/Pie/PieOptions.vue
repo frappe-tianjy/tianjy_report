@@ -10,7 +10,7 @@
 				<el-input v-model="form.title" @change="changeTitle" />
 			</el-form-item>
 			<el-form-item label="X 轴" prop="xAxis">
-				<ElSelect v-model="form.xAxis" :teleported="false"
+				<ElSelect v-model="form.xAxis"
 					@change="changeX">
 					<ElOption v-for="f in fields"
 						:value="f.fieldname"
@@ -19,7 +19,7 @@
 				</ElSelect>
 			</el-form-item>
 			<el-form-item label="Y 轴" prop="yAxis">
-				<ElSelect v-model="form.yAxis" :teleported="false"
+				<ElSelect v-model="form.yAxis"
 					@change="changeY">
 					<ElOption v-for="f in numberFields"
 						:value="f.fieldname"

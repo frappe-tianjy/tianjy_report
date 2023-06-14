@@ -10,7 +10,6 @@
 				<ElSelect
 					v-model="form.chart"
 					filterable remote
-					:teleported="false"
 					:remoteMethod="search"
 					@focus="focus"
 					defaultFirstOption

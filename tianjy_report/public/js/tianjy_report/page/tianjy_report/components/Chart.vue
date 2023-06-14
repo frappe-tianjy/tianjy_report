@@ -1,12 +1,5 @@
 <template>
 	<node-view-wrapper :class="{'draggable-item':isEditable}">
-		<GripVertical
-			v-if="isEditable"
-			class="drag-handle"
-			contenteditable="false"
-			draggable="true"
-			data-drag-handle
-			:size="16"></GripVertical>
 		<div class="content">
 			<Suspense>
 				<ChartBlock
@@ -27,7 +20,6 @@ import { computed, watch } from 'vue';
 import { ref } from 'vue';
 
 import { NodeViewWrapper, nodeViewProps} from '@tiptap/vue-3';
-import { GripVertical} from 'lucide-vue-next';
 
 import ChartBlock from './ChartBlock.vue';
 
@@ -36,6 +28,7 @@ const isEditable = ref<boolean>(props.editor.isEditable);
 props.editor.on('update', ({ editor }) => {
   isEditable.value = props.editor.isEditable;
 });
+
 </script>
 <style scoped lang="less">
 .draggable-item {
@@ -49,17 +42,6 @@ props.editor.on('update', ({ editor }) => {
 		0 0 0 1px rgba(0, 0, 0, 0.05),
 		0px 10px 20px rgba(0, 0, 0, 0.1),
 	;
-
-	.drag-handle {
-		flex: 0 0 auto;
-		position: relative;
-		width: 1rem;
-		height: 1rem;
-		top: 0.3rem;
-		margin-right: 0.5rem;
-		margin-bottom: 1.5rem;
-		cursor: grab;
-	}
 
 	.content {
 		flex: 1 1 auto;

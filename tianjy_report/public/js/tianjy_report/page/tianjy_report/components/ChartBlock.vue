@@ -1,6 +1,16 @@
 <template>
-	<div v-loading="chart?.loading" class="chart-container" ref="blockRef"
-		v-click-outside="onClickOutside">
+	<div v-if="isEditable" class="tools">
+		<GripVertical
+			class="drag-handle"
+			contenteditable="false"
+			draggable="true"
+			data-drag-handle
+			:size="16"></GripVertical>
+		<BlockActions :editable="isEditable">
+			<ChartSettingForm @remove="emit('remove')"></ChartSettingForm>
+		</BlockActions>
+	</div>
+	<div v-loading="chart?.loading" class="chart-container" ref="blockRef">
 		<component
 			v-if="isShowChart"
 			ref="widget"
@@ -21,12 +31,6 @@
 			<div class="mb-1 w-[10rem] text-gray-400">请配置图表</div>
 		</div>
 	</div>
-	<div>
-		<BlockActions :editable="isEditable"
-			:blockRef="blockRef" ref="actionsRef">
-			<ChartSettingForm @remove="emit('remove')"></ChartSettingForm>
-		</BlockActions>
-	</div>
 </template>
 
 <script setup lang="ts">
@@ -34,12 +38,15 @@ import { computed, inject, provide, ref, unref, watch, defineProps, reactive } f
 
 import { ClickOutside as vClickOutside } from 'element-plus';
 
+import { GripVertical, Settings} from 'lucide-vue-next';
+
 import { ChartOptions, ChartProvide } from '../../type';
 
 import { createChart, default as useChart } from './helper';
 import widgets from './widgets/widgets';
 import BlockActions from './BlockActions.vue';
 import ChartSettingForm from './ChartSettingForm.vue';
+
 const emit = defineEmits(['setChartName', 'remove']);
 interface Props {
 	chartName?: string
@@ -49,11 +56,11 @@ interface Props {
 const props = defineProps<Props>();
 
 const blockRef = ref(null);
-const actionsRef = ref(null);
 const searchParams = new URLSearchParams(location.search);
 const reportName = searchParams.get('name');
 const mode = searchParams.get('mode');
 const isPersistence = inject('isPersistence');
+
 const chart = reactive<ChartProvide>({
 	data: [],
 	columns: [],
@@ -73,9 +80,7 @@ const chart = reactive<ChartProvide>({
 });
 
 provide('chart', chart);
-function onClickOutside() {
-	actionsRef.value?.popoverRef?.delayHide?.();
-}
+
 const isShowChart = computed(() => {
 	const type = chart?.doc?.type;
 	const source_doctype = chart?.doc?.source_doctype;
@@ -132,5 +137,16 @@ watch(blockRef, () => {
 	justify-content: center;
 	border: 1px solid #e2e8f0;
 	border-radius: 0.25rem;
+}
+
+.tools {
+	margin-bottom: 1.5rem;
+	display: flex;
+	justify-content: space-between;
+	padding: 0 20px;
+
+	.drag-handle {
+		cursor: grab;
+	}
 }
 </style>
