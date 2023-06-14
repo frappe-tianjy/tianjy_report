@@ -3,8 +3,7 @@
 		:popper-style="{'maxWidth':'450px', 'width':'auto', 'maxHeight':'90%', 'overflowY':'auto'}"
 		:visible="visible"
 		trigger="click"
-		:offset="-5"
-		placement="right-start">
+		placement="right">
 		<template #reference>
 			<Settings class="setting" @click="clickSetting" :size="16"></Settings>
 		</template>
