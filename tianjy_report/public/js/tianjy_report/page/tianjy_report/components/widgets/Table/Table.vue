@@ -42,7 +42,6 @@ const tableData = computed(()=>props.data.map(item=>{
 	// height: 20rem;
 	border: 1px solid #e2e8f0;
 	border-radius: 0.25rem;
-	margin: 1.5rem 0;
 }
 
 .title {

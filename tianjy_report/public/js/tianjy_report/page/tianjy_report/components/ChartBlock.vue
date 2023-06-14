@@ -132,6 +132,5 @@ watch(blockRef, () => {
 	justify-content: center;
 	border: 1px solid #e2e8f0;
 	border-radius: 0.25rem;
-	margin: 1.5rem 0;
 }
 </style>

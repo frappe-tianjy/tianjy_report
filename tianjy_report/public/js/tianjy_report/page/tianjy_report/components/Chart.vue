@@ -57,7 +57,7 @@ props.editor.on('update', ({ editor }) => {
 		height: 1rem;
 		top: 0.3rem;
 		margin-right: 0.5rem;
-		margin-bottom: 4px;
+		margin-bottom: 1.5rem;
 		cursor: grab;
 	}
 

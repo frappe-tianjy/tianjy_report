@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, ref, onMounted, reactive, watch } from 'vue';
+import { inject, ref, onMounted, reactive, watch, onUnmounted } from 'vue';
 
 import { ChartProvide } from '../../../../type';
 
@@ -97,6 +97,9 @@ watch([()=>props.isEditable, ()=>editor], ()=>{
 		editor.enableReadOnlyMode( 'readonly' );
 	}
 }, {immediate:true});
+onUnmounted(()=>{
+	editor?.destroy();
+});
 </script>
 <style scoped>
 .text-container {
