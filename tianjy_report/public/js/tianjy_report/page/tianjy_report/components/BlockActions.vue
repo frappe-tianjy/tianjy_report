@@ -1,6 +1,6 @@
 <template>
 	<el-popover
-		:popper-style="{'maxWidth':'450px', 'width':'auto'}"
+		:popper-style="{'maxWidth':'450px', 'width':'auto', 'maxHeight':'90%', 'overflowY':'auto'}"
 		ref="popoverRef"
 		:virtual-ref="blockRef"
 		:disabled="!editable"
