@@ -28,7 +28,7 @@ function createFilterCom(){
 		parent: $(filerRef.value),
 		doctype: props.options,
 		on_change: () => {
-			let filters = filterIns.value.get_filters();
+			let filters:[string, string, string, string, boolean][] = filterIns.value.get_filters();
 			emit('update:modelValue', filters);
 			change(filters);
 		},
@@ -36,13 +36,9 @@ function createFilterCom(){
 	});
 }
 
-watch(filerRef, ()=>{
-	if (!filerRef.value){ return; }
-	createFilterCom();
-});
-
-watch([()=>props.options, ()=>props.modelValue], ()=>{
+watch([()=>props.options, ()=>props.modelValue, filerRef], ()=>{
 	if (!props.options){ return; }
+	if (!filerRef.value){ return; }
 	if (!filterIns.value||filterIns.value.doctype!==props.options){
 		createFilterCom();
 	}
