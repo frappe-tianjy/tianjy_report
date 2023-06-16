@@ -11,7 +11,7 @@
 			<div class="header">
 				<X class="close" :size="16" @click="close"></X>
 			</div>
-			<slot />
+			<slot :visible="visible" />
 		</div>
 	</el-popover>
 </template>

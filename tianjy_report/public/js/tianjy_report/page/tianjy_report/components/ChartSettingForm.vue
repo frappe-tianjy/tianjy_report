@@ -19,7 +19,7 @@
 			</el-form-item>
 			<el-form-item label="过滤器"
 				v-if="chartType!=='System Chart'&&chartType!=='Text Editor'">
-				<Filter v-model="filter" :options="doctype"
+				<Filter :visible="visible" v-model="filter" :options="doctype"
 					@change="changeFilter"></Filter>
 			</el-form-item>
 			<component
@@ -43,7 +43,7 @@ import widgets from './widgets/widgets';
 import Filter from './Filter.vue';
 
 interface Props{
-
+	visible:boolean
 }
 const props = defineProps<Props>();
 interface Emit{

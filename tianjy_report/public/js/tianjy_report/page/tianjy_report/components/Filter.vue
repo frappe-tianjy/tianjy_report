@@ -11,6 +11,7 @@ import { ref, defineProps, defineEmits, watch, Ref } from 'vue';
 const props = defineProps<{
 	options?: string;
 	modelValue?: string;
+	visible:boolean
 }>();
 const emit = defineEmits<{
 	(event: 'update:modelValue', value: any): void;
@@ -28,6 +29,7 @@ function createFilterCom(){
 		parent: $(filerRef.value),
 		doctype: props.options,
 		on_change: () => {
+			if (!props.visible){ return; }
 			let filters:[string, string, string, string, boolean][] = filterIns.value.get_filters();
 			emit('update:modelValue', filters);
 			change(filters);
