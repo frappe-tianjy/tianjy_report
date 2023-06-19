@@ -6,8 +6,9 @@
 			draggable="true"
 			data-drag-handle
 			:size="16"></GripVertical>
-		<BlockActions :editable="isEditable">
-			<ChartSettingForm @remove="emit('remove')"></ChartSettingForm>
+		<BlockActions :editable="isEditable" v-slot="slotProps">
+			<ChartSettingForm @remove="emit('remove')" :visible="slotProps.visible">
+			</ChartSettingForm>
 		</BlockActions>
 	</div>
 	<div v-loading="chart?.loading" class="chart-container" ref="blockRef">
