@@ -19,7 +19,7 @@ watch([props.options, chartRef], async ()=>{
 	if (!chartRef.value){ return; }
 	$(chartRef.value).empty();
 	const token = await frappe.call<{message:string}>({
-			method: 'tianjy_report.report.report.get_guest_token',
+			method: 'guigu_superset.superset.guest_token.get_guest_token',
 			args: { chart:props.options.chart},
 		});
 	const setting = await frappe.db.get_doc('Guigu Superset Setting');
@@ -31,20 +31,21 @@ watch([props.options, chartRef], async ()=>{
 		fetchGuestToken: async() => token?.message||'',
 		dashboardUiConfig: {
 			filters:{visible:false, expanded:false}, hideChartControls:true,
-			hideTab:true,
+			hideTab:true, hideTitle:true,
 		},
 	});
 }, {immediate:true, deep:true});
 </script>
 <style scoped lang="less">
 .chart {
-	height: 440px;
+	height: 450px;
 	border: 1px solid #e2e8f0;
 	border-radius: 0.25rem;
 
 	:deep(iframe) {
 		width: 100%;
 		height: 100%;
+		border: 0;
 	}
 }
 </style>
