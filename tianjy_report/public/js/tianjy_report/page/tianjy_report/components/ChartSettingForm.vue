@@ -4,21 +4,16 @@
 			<el-form-item label="图表类型">
 				<ElSelect v-model="chartType"
 					@change="changeType">
-					<ElOption value="Bar" label="柱状图"></ElOption>
-					<ElOption value="Table" label="表格"></ElOption>
-					<ElOption value="Pie" label="饼状图"></ElOption>
-					<ElOption value="Line" label="折线图"></ElOption>
-					<ElOption value="Text" label="文本"></ElOption>
-					<ElOption value="System Chart" label="系统图表"></ElOption>
-					<ElOption value="Text Editor" label="富文本"></ElOption>
+					<ElOption v-for="op in chartTypes" :value="op.value"
+						:label="op.label"></ElOption>
 				</ElSelect>
 			</el-form-item>
 			<el-form-item label="单据"
-				v-if="chartType!=='System Chart'&&chartType!=='Text Editor'">
+				v-if="chartType!=='System Chart'&&chartType!=='Text Editor'&&chartType!=='Superset'">
 				<DocSelect v-model="doctype" @change="changeDoctype"></DocSelect>
 			</el-form-item>
 			<el-form-item label="过滤器"
-				v-if="chartType!=='System Chart'&&chartType!=='Text Editor'">
+				v-if="chartType!=='System Chart'&&chartType!=='Text Editor'&&chartType!=='Superset'">
 				<Filter :visible="visible" v-model="filter" :options="doctype"
 					@change="changeFilter"></Filter>
 			</el-form-item>
@@ -34,7 +29,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, defineProps, defineEmits, reactive, watch, inject, Ref } from 'vue';
+import { ref, defineProps, defineEmits, reactive, watch, inject, computed, onMounted } from 'vue';
 
 import { ChartOptions, ChartProvide } from '../../type';
 
@@ -54,6 +49,7 @@ const chart = inject<ChartProvide>('chart');
 const doctype = ref<string>();
 const chartType = ref<string>();
 const filter = ref<any>();
+const chartTypes = ref<{value:string, label:string}[]>([]);
 watch(()=>chart?.doc.filter, ()=>{
 	filter.value = chart?.doc.filter;
 }, {immediate:true});
@@ -63,6 +59,30 @@ watch(()=>chart?.doc.source_doctype, ()=>{
 watch(()=>chart?.doc.type, ()=>{
 	chartType.value = chart?.doc.type||'';
 }, {immediate:true});
+
+onMounted(async()=>{
+	chartTypes.value = [
+		{value:'Bar', label:'柱状图'},
+		{value:'Table', label:'表格'},
+		{value:'Pie', label:'饼状图'},
+		{value:'Line', label:'折线图'},
+		{value:'Text', label:'文本'},
+		{value:'System Chart', label:'系统图表'},
+		{value:'Text Editor', label:'富文本'},
+	];
+	fetch(`/api/resource/${'Guigu Superset Chart'}`).then(function(response) {
+		if (response.ok) {
+			chartTypes.value.push({
+				value:'Superset', label:'Superset',
+			});
+		} else {
+			console.log(`Doctype does not exist.`);
+		}
+		})
+		.catch(function(error) {
+			console.log('Error occurred while checking Doctype:', error);
+		});
+});
 
 function changeDoctype(v:string){
 	if (!chart){ return; }
@@ -83,6 +103,10 @@ async function onDelete(){
 	if (isSuccess){
 		emit('remove');
 	}
+}
+
+function computed(arg0: () => void) {
+throw new Error('Function not implemented.');
 }
 </script>
 

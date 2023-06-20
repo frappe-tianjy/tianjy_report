@@ -18,7 +18,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Type",
-   "options": "Table\nBar\nPie\nLine\nText\nSystem Chart\nText Editor",
+   "options": "Table\nBar\nPie\nLine\nText\nSystem Chart\nText Editor\nSuperset",
    "read_only": 1
   },
   {
@@ -50,7 +50,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-06 15:44:38.418779",
+ "modified": "2023-06-19 17:03:04.837843",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report Template Block",

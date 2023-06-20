@@ -83,7 +83,7 @@ def source_persistence(report_name, persistence_state):
     for block in blocks:
         _block = frappe.get_doc("Tianjy Report Block", block.name)
         if persistence_state == "1":
-            if _block.type == 'System Chart':
+            if _block.type == 'System Chart' or _block.type == 'Superset':
                 continue
             if _block.type == 'Text Editor':
                 opt = eval(block.options)
