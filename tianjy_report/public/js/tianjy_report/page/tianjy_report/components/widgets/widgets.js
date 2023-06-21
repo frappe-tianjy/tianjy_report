@@ -14,6 +14,8 @@ import SystemChart from './SystemChart/SystemChart.vue';
 import SystemChartOption from './SystemChart/SystemChartOption.vue';
 import TextEditor from './TextEditor/TextEditor.vue';
 import TextEditorOption from './TextEditor/TextEditorOption.vue';
+import Superset from './Superset/Superset.vue';
+import SupersetOption from './Superset/SupersetOption.vue';
 
 const VALID_CHARTS = ['Number', 'Line', 'Bar', 'Pie', 'Table', 'SystemChart', 'TextEditorOption'];
 
@@ -86,6 +88,15 @@ const WIDGETS = {
 		icon: 'align-left',
 		component: TextEditor,
 		optionsComponent: TextEditorOption,
+		options: {},
+		defaultWidth: 10,
+		defaultHeight: 2,
+	},
+	'Superset': {
+		type: 'Superset',
+		icon: 'align-left',
+		component: Superset,
+		optionsComponent: SupersetOption,
 		options: {},
 		defaultWidth: 10,
 		defaultHeight: 2,

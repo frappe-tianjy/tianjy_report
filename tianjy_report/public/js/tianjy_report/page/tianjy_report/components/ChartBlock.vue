@@ -85,7 +85,7 @@ provide('chart', chart);
 const isShowChart = computed(() => {
 	const type = chart?.doc?.type;
 	const source_doctype = chart?.doc?.source_doctype;
-	return type === 'Text Editor' || type === 'System Chart' || (type && source_doctype);
+	return type === 'Text Editor' || type === 'System Chart' ||type === 'Superset'|| (type && source_doctype);
 });
 function getTimeout(infoEntry: IntersectionObserverEntry) {
 	setTimeout(async () => {

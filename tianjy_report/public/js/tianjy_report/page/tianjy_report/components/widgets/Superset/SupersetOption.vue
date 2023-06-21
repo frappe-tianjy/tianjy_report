@@ -14,14 +14,14 @@
 					@focus="focus"
 					defaultFirstOption
 					:loading="loading || waiting"
-					@change="changeSystemChart">
+					@change="changeSupersetChart">
 					<ElOption
 						v-for="{ value, label, description } in opts"
 						:key="value"
 						:label="label"
 						:value="value">
 						{{ label }}
-						<!-- <small v-if="description">{{ description }}</small> -->
+						<small v-if="description">{{ description }}</small>
 					</ElOption>
 				</ElSelect>
 			</el-form-item>
@@ -77,9 +77,8 @@ const rules = reactive<FormRules>({
     },
   ],
 });
-const fields = ref<locals.DocField[]>([]);
 
-function changeSystemChart(v:string){
+function changeSupersetChart(v:string){
 	if (!chart){ return; }
 	chart.doc.options.chart = v;
 }
@@ -87,7 +86,7 @@ function changeSystemChart(v:string){
 const [remoteMethod, loading, waiting] = useDebounce(
 	async (query?: string) => {
 		const args = {
-			txt: query || '', doctype: 'Dashboard Chart',
+			txt: query || '', doctype: 'Guigu Superset Chart',
 		};
 		return frappe.call<{ results: Result[] }>({
 			type: 'POST',
