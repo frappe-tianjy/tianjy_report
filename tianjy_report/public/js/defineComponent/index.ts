@@ -29,11 +29,12 @@ function renderComponent(
 	el: string | Element,
 	moduleName: string,
 	component: string | Component,
-	plugins?: { plugin: Plugin, options?: any }[]
+	plugins?: { plugin: Plugin, options?: any }[],
+	props?:any
 ) {
 
 	const com = frappe.guigu.vuelib.components[moduleName] ? frappe.guigu.vuelib.components[moduleName][component] : component;
-	const app = createApp(com, {});
+	const app = createApp(com, props);
 	plugins?.forEach(item => {
 		app.use(item.plugin, item.options);
 	});
