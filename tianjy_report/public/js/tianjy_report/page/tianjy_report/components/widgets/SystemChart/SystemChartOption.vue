@@ -31,7 +31,6 @@
 
 <script setup lang='ts'>
 import { ref, defineProps, defineEmits, reactive, watch, inject, Ref, computed } from 'vue';
-
 import type { FormInstance, FormRules } from 'element-plus';
 
 import { ChartOptions, ChartProvide } from '../../../../type';
@@ -69,13 +68,13 @@ watch(()=>chart?.doc.options, ()=>{
 });
 
 const rules = reactive<FormRules>({
-  chart: [
-    {
-      required: true,
-      message: '请选择图表',
-      trigger: 'change',
-    },
-  ],
+	chart: [
+		{
+			required: true,
+			message: '请选择图表',
+			trigger: 'change',
+		},
+	],
 });
 const fields = ref<locals.DocField[]>([]);
 
@@ -93,14 +92,14 @@ const [remoteMethod, loading, waiting] = useDebounce(
 			type: 'POST',
 			method: 'frappe.desk.search.search_link',
 			args,
-		}).then(v => v?.results || []);
+		}).then(v => v?.results||v?.message || []);
 	}, 300, {
-	render: v => {
-		opts.value = [
-			...v.map(({ value, label, description }) => ({ value, label: label || tt(value), description })),
-		];
-	},
-});
+		render: v => {
+			opts.value = [
+				...v.map(({ value, label, description }) => ({ value, label: label || tt(value), description })),
+			];
+		},
+	});
 let searchString = '';
 function search(query?: string) {
 	searchString = query || '';

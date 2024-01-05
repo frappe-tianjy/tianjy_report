@@ -56,18 +56,18 @@ const [remoteMethod, loading, waiting] = useDebounce(
 		const args = {
 			txt: query || '', doctype: 'DocType',
 		};
-		return frappe.call<{ results: Result[] }>({
+		return frappe.call<{ message: Result[] }>({
 			type: 'POST',
 			method: 'frappe.desk.search.search_link',
 			args,
-		}).then(v => v?.results || []);
+		}).then(v => v?.message || []);
 	}, 300, {
-	render: v => {
-		opts.value = [
-			...v.map(({ value, label, description }) => ({ value, label: label || tt(value), description })),
-		];
-	},
-});
+		render: v => {
+			opts.value = [
+				...v.map(({ value, label, description }) => ({ value, label: label || tt(value), description })),
+			];
+		},
+	});
 let value = '';
 function search(query?: string) {
 	value = query || '';
