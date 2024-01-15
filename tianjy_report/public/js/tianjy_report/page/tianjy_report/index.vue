@@ -66,9 +66,13 @@ const loaded = ref<boolean>(false);
 const loading = ref<boolean>(true);
 
 const isPersistence=ref<boolean>(false);
+const reportStartDate=ref<string>('');
+const reportEndDate=ref<string>('');
 const edit = ref<boolean>(false);
 const writePermission = ref<boolean>(false);
 provide('isPersistence', isPersistence);
+provide('reportStartDate', reportStartDate);
+provide('reportEndDate', reportEndDate);
 const reportType =computed(()=>mode==='template'?'Tianjy Report Template':'Tianjy Report');
 
 function saveLayout(json:any){
@@ -127,11 +131,13 @@ watch([()=>reportName, ()=>mode], async()=>{
 	if (!reportName){ return; }
 	loaded.value=false;
 	loading.value=true;
-	const res:{layout?:string, subject:string, is_persistence?:0|1, } = await frappe.db.get_doc(reportType.value, reportName );
+	const res:{layout?:string, subject:string, is_persistence?:0|1, start_date:string, end_date:string} = await frappe.db.get_doc(reportType.value, reportName );
 	content.value = JSON.parse(res.layout||'{}');
 	subject.value = res.subject;
+	reportStartDate.value = res.start_date;
+	reportEndDate.value = res.end_date
 	const editable = mode==='template';
-	editor.value.setEditable(editable);
+	editor.value?.setEditable(editable);
 	isPersistence.value = res.is_persistence?.toString()==='1';
 	loaded.value=true;
 	loading.value=false;

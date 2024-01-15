@@ -17,6 +17,15 @@
 				<Filter :visible="visible" v-model="filter" :options="doctype"
 					@change="changeFilter"></Filter>
 			</el-form-item>
+			<el-form-item label="日期随动过滤器"
+				v-if="chartType!=='System Chart'&&chartType!=='Text Editor'&&chartType!=='Superset'">
+				<DateFilter
+				 	v-model="dateFilter" 
+					:options="doctype"
+					:reportEndDate="reportEndDate"
+					:reportStartDate="reportStartDate"
+				></DateFilter>
+			</el-form-item>
 			<component
 				v-if="chartType"
 				:is="widgets.getOptionComponent(chartType)"
@@ -36,7 +45,7 @@ import { ChartOptions, ChartProvide } from '../../type';
 import DocSelect from './DocSelect.vue';
 import widgets from './widgets/widgets';
 import Filter from './Filter.vue';
-
+import DateFilter from './DateFilter.vue'
 interface Props{
 	visible:boolean
 }
@@ -46,6 +55,8 @@ interface Emit{
 }
 const emit = defineEmits<Emit>();
 const chart = inject<ChartProvide>('chart');
+const reportStartDate = inject<string>('reportStartDate');
+const reportEndDate = inject<string>('reportEndDate');
 const doctype = ref<string>();
 const chartType = ref<string>();
 const filter = ref<any>();
@@ -53,6 +64,16 @@ const chartTypes = ref<{value:string, label:string}[]>([]);
 watch(()=>chart?.doc.filter, ()=>{
 	filter.value = chart?.doc.filter;
 }, {immediate:true});
+
+const dateFilter = computed({
+	set(v:any){
+		if (!doctype.value){ return; }
+		chart?.updateDateQuery?.(doctype.value, v);
+	},
+	get(){
+		return chart?.doc.dateFilter
+	}
+})
 watch(()=>chart?.doc.source_doctype, ()=>{
 	doctype.value = chart?.doc.source_doctype||'';
 }, {immediate:true});
@@ -87,7 +108,8 @@ onMounted(async()=>{
 function changeDoctype(v:string){
 	if (!chart){ return; }
 	chart.doc.options = {};
-	chart?.updateQuery(v);
+	chart?.updateQuery?.(v);
+	chart?.updateDateQuery?.(v);
 }
 
 function changeType(v:string){
@@ -96,7 +118,7 @@ function changeType(v:string){
 }
 function changeFilter(v:any){
 	if (!doctype.value){ return; }
-	chart?.updateQuery(doctype.value, v);
+	chart?.updateQuery?.(doctype.value, v);
 }
 async function onDelete(){
 	const isSuccess = await chart?.delete?.();
@@ -105,9 +127,6 @@ async function onDelete(){
 	}
 }
 
-function computed(arg0: () => void) {
-throw new Error('Function not implemented.');
-}
 </script>
 
 <style lang='less' scoped>

@@ -89,14 +89,21 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 					: objSources;
 				state.doc.sources = sources;
 			}
-			let {filter} = block;
+			let {filter, date_filter} = block;
 			if (typeof block.filter === 'string'){
 				filter = frappe.utils.get_filter_from_json(
 					block.filter,
 					state.doc.source_doctype
 				);
 			}
+			if (typeof block.date_filter ==='string'){
+				date_filter = frappe.utils.get_filter_from_json(
+					block.date_filter,
+					state.doc.source_doctype
+				);
+			}
 			state.doc.filter = filter;
+			state.doc.dateFilter = date_filter;
 			if (!state.doc.source_doctype) {
 				state.loading = false;
 				return;
@@ -125,7 +132,8 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 				await loadLinkDocTypes(meta);
 				const fields:[string, string][] = meta.fields
 					.filter(f=>!notValueField.includes(f.fieldtype)).map(f=>[f.fieldname, meta.name]);
-				const list = await requestDocList(meta, state.doc.filter??undefined, {
+				const unionFilter = [...state.doc.filter||[], ...state.doc.dateFilter||[]]
+				const list = await requestDocList(meta, unionFilter??undefined, {
 					fields, limit:0, order:[], group:[],
 				});
 				state.data = list;
@@ -162,6 +170,20 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 	}
 	const updateQuery = debounce(asyncUpdateQuery, 500);
 
+	async function asyncUpdateDateQuery(doctype:string, filter?:any) {
+		if (!doctype) { return; }
+		if (state.doc.source_doctype === doctype&&filter===state.doc.dateFilter) { return; }
+		state.doc.source_doctype = doctype;
+		state.doc.dateFilter = filter||[];
+		const filterJson = frappe.utils.get_filter_as_json(filter||[]);
+		await frappe.db.set_value(blockType, mode==='template'?chartName:state.doc.reportBlockName, {
+			source_doctype:doctype,
+			date_filter:filterJson,
+		});
+		updateChartData();
+	}
+	const updateDateQuery = debounce(asyncUpdateDateQuery, 500);
+
 	let autosaveWatcher:any = undefined;
 	function enableAutoSave() {
 		state.autosave = true;
@@ -197,6 +219,7 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 		load,
 		save,
 		updateQuery,
+		updateDateQuery,
 		enableAutoSave,
 		disableAutoSave,
 		delete: deleteChart,

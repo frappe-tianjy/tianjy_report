@@ -12,7 +12,8 @@
   "filter",
   "options",
   "sources",
-  "reference_block_name"
+  "reference_block_name",
+  "date_filter"
  ],
  "fields": [
   {
@@ -62,11 +63,16 @@
    "fieldname": "reference_block_name",
    "fieldtype": "Data",
    "label": "Reference Block Name"
+  },
+  {
+   "fieldname": "date_filter",
+   "fieldtype": "JSON",
+   "label": "Date Filter"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-19 17:02:29.020209",
+ "modified": "2024-01-15 14:34:33.020638",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report Block",
@@ -87,5 +93,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "tianjy_organization_filter_method": "Equal"
 }
