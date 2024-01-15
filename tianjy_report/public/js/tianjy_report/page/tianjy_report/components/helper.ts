@@ -3,7 +3,7 @@ import { reactive } from 'vue';
 import { watchDebounced, watchOnce } from '@vueuse/core';
 import { debounce } from 'lodash';
 
-import { ChartOptions, ChartProvide } from '../../type';
+import type { ChartOptions, ChartProvide, DateFilter } from '../../type';
 import requestDocList from '../../../../utils/requestDocList';
 export const numberFieldTypes=['Currency', 'Float', 'Int', 'Percent'];
 export const notValueField = ['HTML', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor', 'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Connection Table', 'Table', 'Barcode', 'Button', 'Geolocation', 'Heading', 'JSON', 'Signature', 'Table MultiSelect', 'Filter', 'Excel'];
@@ -51,14 +51,14 @@ export async function createChart(reportName:string, mode:string|null) {
 	return res?.name||'';
 }
 
-export default function useChart(initChart:ChartOptions, reportName:string, name:string, mode:string|null, isPersistence:boolean|null) {
+export default function useChart(initChart:ChartOptions, reportName:string, name:string, mode:string|null, isPersistence:boolean|null, reportStartDate?:string, reportEndDate?:string) {
 	if (!charts[name]) {
-		charts[name] = getChart(initChart, reportName, name, mode, isPersistence);
+		charts[name] = getChart(initChart, reportName, name, mode, isPersistence, reportStartDate, reportEndDate);
 	}
 	return charts[name];
 }
 
-function getChart(initChart:ChartOptions, reportName:string, chartName:string, mode:string|null, isPersistence:boolean|null):ChartProvide {
+function getChart(initChart:ChartOptions, reportName:string, chartName:string, mode:string|null, isPersistence:boolean|null, reportStartDate?:string, reportEndDate?:string):ChartProvide {
 	const blockType = mode==='template'?'Tianjy Report Template Block':'Tianjy Report Block';
 	const state = initChart;
 	async function load() {
@@ -132,7 +132,17 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 				await loadLinkDocTypes(meta);
 				const fields:[string, string][] = meta.fields
 					.filter(f=>!notValueField.includes(f.fieldtype)).map(f=>[f.fieldname, meta.name]);
-				const unionFilter = [...state.doc.filter||[], ...state.doc.dateFilter||[]]
+				const dateFilter = (state.doc.dateFilter||[]).map(item=>{
+						if(!reportStartDate||!reportEndDate){
+							return []
+						}
+						if(item[3] === 'start_date'){
+							return [...item.slice(0,3), reportStartDate]
+						}else{
+							return [...item.slice(0,3), reportEndDate]
+						}
+				}).filter(item=>item.length!==0) as DateFilter[]
+				const unionFilter = [...state.doc.filter||[], ...dateFilter]
 				const list = await requestDocList(meta, unionFilter??undefined, {
 					fields, limit:0, order:[], group:[],
 				});

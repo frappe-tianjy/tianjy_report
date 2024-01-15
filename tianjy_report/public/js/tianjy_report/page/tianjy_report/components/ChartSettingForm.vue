@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, defineProps, defineEmits, reactive, watch, inject, computed, onMounted } from 'vue';
+import { ref, defineProps, defineEmits, reactive, watch, inject, computed, onMounted, type Ref } from 'vue';
 
 import { ChartOptions, ChartProvide } from '../../type';
 
@@ -55,8 +55,8 @@ interface Emit{
 }
 const emit = defineEmits<Emit>();
 const chart = inject<ChartProvide>('chart');
-const reportStartDate = inject<string>('reportStartDate');
-const reportEndDate = inject<string>('reportEndDate');
+const reportStartDate = inject<Ref<string>>('reportStartDate');
+const reportEndDate = inject<Ref<string>>('reportEndDate');
 const doctype = ref<string>();
 const chartType = ref<string>();
 const filter = ref<any>();

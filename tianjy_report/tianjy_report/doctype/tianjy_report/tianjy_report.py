@@ -36,6 +36,7 @@ class TianjyReport(Document):
             report_block.source_doctype = block.source_doctype
             report_block.filter = block.filter
             report_block.options = block.options
+            report_block.date_filter = block.date_filter
             report_block.save()
 
 

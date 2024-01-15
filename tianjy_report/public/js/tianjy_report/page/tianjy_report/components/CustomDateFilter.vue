@@ -47,18 +47,14 @@ const emit = defineEmits<{
 }>();
 const valueOptions = computed(()=>{
 	const dateOptions = []
-	if(props.reportStartDate){
-		dateOptions.push({
-			label:`${__('Start Date')}(${props.reportStartDate})`,
-			value:props.reportStartDate
-		})
-	}
-	if(props.reportEndDate){
-		dateOptions.push({
-			label:`${__('End Date')}(${props.reportEndDate})`,
-			value:props.reportEndDate
-		})
-	}
+	dateOptions.push({
+		label:`${__('Start Date')}(${props.reportStartDate||'无'})`,
+		value:'start_date'
+	})
+	dateOptions.push({
+		label:`${__('End Date')}(${props.reportEndDate||'无'})`,
+		value:'end_date'
+	})
 	return dateOptions
 })
 

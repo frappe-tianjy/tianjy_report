@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, provide, ref, unref, watch, defineProps, reactive } from 'vue';
+import { computed, inject, provide, ref, unref, watch, defineProps, reactive, type Ref } from 'vue';
 
 import { ClickOutside as vClickOutside } from 'element-plus';
 
@@ -60,7 +60,9 @@ const blockRef = ref(null);
 const searchParams = new URLSearchParams(location.search);
 const reportName = searchParams.get('name');
 const mode = searchParams.get('mode');
-const isPersistence = inject('isPersistence');
+const isPersistence = inject<Ref<boolean>>('isPersistence');
+const reportStartDate = inject<Ref<string>>('reportStartDate');
+const reportEndDate = inject<Ref<string>>('reportEndDate');
 
 const chart = reactive<ChartProvide>({
 	data: [],
@@ -92,10 +94,10 @@ function getTimeout(infoEntry: IntersectionObserverEntry) {
 		if (!props.chartName) {
 			const chartName = await createChart(reportName || '', mode);
 			emit('setChartName', chartName);
-			const getChart = useChart(chart, reportName, chartName, mode, isPersistence.value);
+			const getChart = useChart(chart, reportName, chartName, mode, isPersistence?.value, reportStartDate?.value, reportEndDate?.value);
 			Object.assign(chart, getChart);
 		} else {
-			const getChart = useChart(chart, reportName, props.chartName, mode, isPersistence.value);
+			const getChart = useChart(chart, reportName, props.chartName, mode, isPersistence?.value, reportStartDate?.value, reportEndDate?.value);
 			Object.assign(chart, getChart);
 		}
 		const blockType = mode === 'template' ? 'Tianjy Report Template Block' : 'Tianjy Report Block';

@@ -10,7 +10,8 @@
   "type",
   "source_doctype",
   "filter",
-  "options"
+  "options",
+  "date_filter"
  ],
  "fields": [
   {
@@ -46,11 +47,16 @@
    "in_list_view": 1,
    "label": "Source DocType",
    "options": "DocType"
+  },
+  {
+   "fieldname": "date_filter",
+   "fieldtype": "JSON",
+   "label": "Date Filter"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-19 17:03:04.837843",
+ "modified": "2024-01-15 17:13:33.110858",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report Template Block",
@@ -71,5 +77,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "tianjy_organization_filter_method": "Equal"
 }
