@@ -28,11 +28,11 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, defineProps, defineEmits, reactive, watch, inject, Ref, computed } from 'vue';
+import { ref, defineProps, defineEmits, reactive, watch, inject, computed } from 'vue';
 
 import type { FormInstance, FormRules } from 'element-plus';
 
-import { ChartOptions, ChartProvide } from '../../../../type';
+import type { ChartOptions, ChartProvide } from '../../../../type';
 const notValueField = ['HTML Editor', 'Text Editor', 'Code', 'Markdown Editor', 'HTML Editor', 'Column Break', 'Heading', 'Section Break', 'Tab Break', 'Connection Table'];
 
 const formRef = ref<FormInstance>();

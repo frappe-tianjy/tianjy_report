@@ -40,7 +40,7 @@
 <script setup lang='ts'>
 import { ref, defineProps, defineEmits, reactive, watch, inject, computed, onMounted, type Ref } from 'vue';
 
-import { ChartOptions, ChartProvide } from '../../type';
+import type { ChartOptions, ChartProvide } from '../../type';
 
 import DocSelect from './DocSelect.vue';
 import widgets from './widgets/widgets';

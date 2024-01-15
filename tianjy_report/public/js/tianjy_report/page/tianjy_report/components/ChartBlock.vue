@@ -41,7 +41,7 @@ import { ClickOutside as vClickOutside } from 'element-plus';
 
 import { GripVertical, Settings} from 'lucide-vue-next';
 
-import { ChartOptions, ChartProvide } from '../../type';
+import type { ChartOptions, ChartProvide } from '../../type';
 
 import { createChart, default as useChart } from './helper';
 import widgets from './widgets/widgets';

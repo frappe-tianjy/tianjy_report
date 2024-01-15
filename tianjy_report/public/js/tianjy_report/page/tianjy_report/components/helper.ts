@@ -198,7 +198,6 @@ function getChart(initChart:ChartOptions, reportName:string, chartName:string, m
 	function enableAutoSave() {
 		state.autosave = true;
 		autosaveWatcher = watchDebounced(() => state.doc, save, {
-			deep: true,
 			debounce: 500,
 		});
 	}

@@ -6,7 +6,8 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, defineProps, defineEmits, watch, Ref } from 'vue';
+import { ref, defineProps, defineEmits, watch } from 'vue';
+import type { Ref } from 'vue'
 
 const props = defineProps<{
 	options?: string;
