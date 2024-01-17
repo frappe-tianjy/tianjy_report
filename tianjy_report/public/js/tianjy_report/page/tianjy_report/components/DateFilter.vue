@@ -10,9 +10,10 @@
 				@close="closeFilter"
 			></CustomDateFilter>
 		</div>
+		<hr class="divider" />
 		<div class="btn-container">
-			<ElButton @click="add">增加以一个过滤条件</ElButton>
-			<ElButton @click="clear">清除过滤条件</ElButton>
+			<ElButton text @click="add" >+增加一个过滤条件</ElButton>
+			<ElButton text bg @click="clear">清除过滤条件</ElButton>
 		</div>
 	</div>
 </template>
