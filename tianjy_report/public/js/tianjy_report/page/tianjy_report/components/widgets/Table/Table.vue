@@ -1,18 +1,18 @@
 <template>
-	<div class="table-container">
+	<div ref="tableContainerRef" class="table-container">
 		<h4 class="title">{{ props.options.title }}</h4>
-		<el-table :data="tableData" style="width: 100%" height="100%">
+		<el-table border :data="tableData" style="width: 100%" height="100%">
 			<el-table-column
 				v-for="(col, index) in columns"
 				:prop="col.fieldname"
 				:label="tt(col.label)"
-				:width="index===columns.length-1?undefined:180" />
+				:width="index===columns.length-1?(useWidth?col.size:undefined):col.size" />
 		</el-table>
 	</div>
 </template>
 
 <script setup lang='ts'>
-import { ref, defineProps, defineEmits, computed, watch, inject } from 'vue';
+import { ref, defineProps, defineEmits, computed, watch, inject, type Ref } from 'vue';
 import type { ChartProvide } from '../../../../type';
 import { ElTable, ElTableColumn } from 'element-plus';
 
@@ -23,19 +23,21 @@ interface Props{
 	options:Record<string, any>
 }
 const props = defineProps<Props>();
-interface Emit{
 
-}
-const emit = defineEmits<Emit>();
 const chart = inject<ChartProvide>('chart');
-const columns = computed(()=>(props.options?.columns||[]).filter(item=>{
+const tableContainerRef = ref<HTMLDivElement>()
+const columns:Ref<{label:string, size?:string, fieldname:string}[]> = computed(()=>(props.options?.columns||[]).filter((item:any)=>{
 	const field = fields.value.find(f=>f.fieldname === item.fieldname)
 	return Boolean(field)
 }));
 
 const fields = ref<locals.DocField[]>([]);
 const doctype = computed(()=>chart?.doc.source_doctype);
-
+const maxWidth = computed(()=>tableContainerRef.value?.offsetWidth||0)
+const useWidth = computed(()=>{
+	const sumWidth = columns.value.map(item=>parseFloat(item.size||'0')).reduce((pre,next)=>pre+next, 0);
+	return sumWidth>maxWidth.value
+})
 watch(doctype, async ()=>{
 	if (!doctype.value){ fields.value=[]; return; }
 	await new Promise(r => frappe.model.with_doctype(doctype.value!, r));
@@ -45,7 +47,7 @@ watch(doctype, async ()=>{
 
 const tableData = computed(()=>props.data.map(item=>{
 		const d:any = {};
-		props.options?.columns?.forEach(each=>{
+		props.options?.columns?.forEach((each:any)=>{
 			const field = fields.value.find(f=>f.fieldname === each.fieldname)
 			if(!field){
 				return 
