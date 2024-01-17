@@ -1,33 +1,37 @@
 <template>
-	<div v-loading="loading">
-		<div class="title container">
-			<ElTooltip :content="subject">
-				<h3 class="subject">{{ subject }}</h3>
-			</ElTooltip>
-			<div class="btn-container">
-				<ElButton type="primary"
-					v-if="mode==='report'&&isPersistence===false&&writePermission"
-					class="persis-btn"
-					@click="setEdit">{{edit?'查看':'编辑'}}</ElButton>
-				<ElButton type="primary"
-					v-if="mode==='report'&&isPersistence===false"
-					class="persis-btn"
-					@click="persistent">持久化</ElButton>
+	<ElConfigProvider size="small" :locale="zhCn">
+		<div v-loading="loading">
+			<div class="title container">
+				<ElTooltip :content="subject">
+					<h3 class="subject">{{ subject }}</h3>
+				</ElTooltip>
+				<div class="btn-container">
+					<ElButton type="primary"
+						v-if="mode==='report'&&isPersistence===false&&writePermission"
+						class="persis-btn"
+						@click="setEdit">{{edit?'查看':'编辑'}}</ElButton>
+					<ElButton type="primary"
+						v-if="mode==='report'&&isPersistence===false"
+						class="persis-btn"
+						@click="persistent">持久化</ElButton>
+				</div>
+			</div>
+			<Tools v-if="(mode==='report'&&edit&&!isPersistence)||(mode==='template')"
+				:editor="editor"></Tools>
+			<div class="container editor-container ck-content">
+				<editor-content :editor="editor" class="editor" />
 			</div>
 		</div>
-		<Tools v-if="(mode==='report'&&edit&&!isPersistence)||(mode==='template')"
-			:editor="editor"></Tools>
-		<div class="container editor-container ck-content">
-			<editor-content :editor="editor" class="editor" />
-		</div>
-	</div>
+	</ElConfigProvider>
 </template>
 
 <script setup lang='ts'>
 import { ref, defineProps, defineEmits, onMounted, watch, computed, provide } from 'vue';
 
 import { debounce } from 'lodash';
-
+import { ElButton, ElTooltip } from 'element-plus';
+import zhCn from 'element-plus/dist/locale/zh-cn.js';
+import { ElConfigProvider } from 'element-plus';
 import { useEditor, EditorContent, BubbleMenu } from '@tiptap/vue-3';
 import Table from '@tiptap/extension-table';
 import TableCell from '@tiptap/extension-table-cell';

@@ -14,6 +14,8 @@
 <script setup lang='ts'>
 import { ref, defineProps, defineEmits, computed, watch, inject } from 'vue';
 import type { ChartProvide } from '../../../../type';
+import { ElTable, ElTableColumn } from 'element-plus';
+
 const tt=__;
 
 interface Props{

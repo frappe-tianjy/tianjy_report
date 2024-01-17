@@ -39,6 +39,7 @@
 
 <script setup lang='ts'>
 import { ref, defineProps, defineEmits, reactive, watch, inject, computed } from 'vue';
+import { ElForm, ElSelect, ElOption, ElFormItem, ElInput } from 'element-plus';
 
 import type { FormInstance, FormRules } from 'element-plus';
 

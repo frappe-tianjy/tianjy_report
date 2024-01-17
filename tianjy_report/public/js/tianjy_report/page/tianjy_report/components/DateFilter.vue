@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="filter-container">
 		<div v-for="filter in filters">
 			<CustomDateFilter 
 				:dateFields="dateFields"
@@ -21,6 +21,8 @@
 import { ref, defineProps, defineEmits, watch,} from 'vue';
 import CustomDateFilter from './CustomDateFilter.vue'
 import type { DateFilter } from '../../type';
+import { ElButton } from 'element-plus';
+
 const props = defineProps<{
 	options?: string;
 	modelValue?: DateFilter[];
@@ -91,6 +93,9 @@ function getValidateFilter(filters:[string, ...DateFilter][]){
 </script>
 
 <style lang='less' scoped>
+.filter-container{
+	width:100%;
+}
 .btn-container{
 	margin-top: 8px;
 	display: flex;

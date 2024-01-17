@@ -96,6 +96,8 @@ import {
 	Bold, Italic, Strikethrough, AlignLeft, AlignCenter, AlignRight, AlignJustify, Table,
 	Heading1, Heading2, Heading3, LineChart, Image, ListOrdered, List,
 } from 'lucide-vue-next';
+import { ElButton, ElTooltip } from 'element-plus';
+
 interface Props{
 	editor:any
 }

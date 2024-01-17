@@ -1,5 +1,5 @@
 <template>
-	<el-popover
+	<ElPopover
 		:popper-style="{'maxWidth':'450px', 'width':'auto', 'maxHeight':'90%', 'overflowY':'auto'}"
 		:visible="visible"
 		trigger="click"
@@ -13,12 +13,12 @@
 			</div>
 			<slot :visible="visible" />
 		</div>
-	</el-popover>
+	</ElPopover>
 </template>
 
 <script setup lang="ts">
 import { ref, defineExpose, watch } from 'vue';
-
+import { ElPopover } from 'element-plus';
 import { Settings, X} from 'lucide-vue-next';
 
 const props = defineProps({

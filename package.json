@@ -1,5 +1,5 @@
 {
-  "name": "guigu_pm",
+  "name": "tianjy_report",
   "version": "1.0.0",
   "description": "硅谷科技项目管理",
   "main": "index.js",
@@ -32,6 +32,8 @@
     "@tiptap/suggestion": "^2.0.3",
     "@tiptap/vue-3": "^2.0.3",
     "echarts": "^5.4.2",
-    "lucide-vue-next": "^0.220.0"
+    "element-plus": "^2.5.1",
+    "lucide-vue-next": "^0.220.0",
+    "v-viewer": "^3.0.13"
   }
 }

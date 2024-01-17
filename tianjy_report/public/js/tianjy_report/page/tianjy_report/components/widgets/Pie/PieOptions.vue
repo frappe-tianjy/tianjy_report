@@ -35,6 +35,7 @@
 import { ref, defineProps, defineEmits, reactive, watch, inject, computed } from 'vue';
 
 import type { FormInstance, FormRules } from 'element-plus';
+import { ElForm, ElSelect, ElOption, ElFormItem, ElInput } from 'element-plus';
 
 import type { ChartOptions, ChartProvide } from '../../../../type';
 import { numberFieldTypes, notValueField } from '../../helper';

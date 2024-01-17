@@ -8,10 +8,10 @@ app_email = "Tianjy"
 app_license = "MIT"
 
 app_include_js = [
-    "tianjy_report.bundle.guigu.ts",
+    "tianjy_report.bundle.js",
 ]
 app_include_css = [
-    "tianjy_report.bundle.guigu.css",
+    "tianjy_report.bundle.css",
 ]
 
 # Includes in <head>

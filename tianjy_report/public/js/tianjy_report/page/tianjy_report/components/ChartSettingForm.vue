@@ -1,23 +1,23 @@
 <template>
 	<div class="form">
 		<ElForm label-position="top" @submit.prevent>
-			<el-form-item label="图表类型">
+			<ElFormItem label="图表类型">
 				<ElSelect v-model="chartType"
 					@change="changeType">
 					<ElOption v-for="op in chartTypes" :value="op.value"
 						:label="op.label"></ElOption>
 				</ElSelect>
-			</el-form-item>
-			<el-form-item label="单据"
+			</ElFormItem>
+			<ElFormItem label="单据"
 				v-if="chartType!=='System Chart'&&chartType!=='Text Editor'&&chartType!=='Superset'">
 				<DocSelect v-model="doctype" @change="changeDoctype"></DocSelect>
-			</el-form-item>
-			<el-form-item label="过滤器"
+			</ElFormItem>
+			<ElFormItem label="过滤器"
 				v-if="chartType!=='System Chart'&&chartType!=='Text Editor'&&chartType!=='Superset'">
 				<Filter :visible="visible" v-model="filter" :options="doctype"
 					@change="changeFilter"></Filter>
-			</el-form-item>
-			<el-form-item label="日期随动过滤器"
+			</ElFormItem>
+			<ElFormItem label="日期随动过滤器"
 				v-if="chartType!=='System Chart'&&chartType!=='Text Editor'&&chartType!=='Superset'">
 				<DateFilter
 				 	v-model="dateFilter" 
@@ -25,14 +25,14 @@
 					:reportEndDate="reportEndDate"
 					:reportStartDate="reportStartDate"
 				></DateFilter>
-			</el-form-item>
+			</ElFormItem>
 			<component
 				v-if="chartType"
 				:is="widgets.getOptionComponent(chartType)"
 				:key="chartType" />
-			<el-form-item>
-				<el-button type="danger" @click="onDelete">删除</el-button>
-			</el-form-item>
+			<ElFormItem>
+				<ElButton type="danger" @click="onDelete">删除</ElButton>
+			</ElFormItem>
 		</ElForm>
 	</div>
 </template>
@@ -41,6 +41,7 @@
 import { ref, defineProps, defineEmits, reactive, watch, inject, computed, onMounted, type Ref } from 'vue';
 
 import type { ChartOptions, ChartProvide } from '../../type';
+import { ElButton, ElForm, ElSelect, ElOption, ElFormItem } from 'element-plus';
 
 import DocSelect from './DocSelect.vue';
 import widgets from './widgets/widgets';

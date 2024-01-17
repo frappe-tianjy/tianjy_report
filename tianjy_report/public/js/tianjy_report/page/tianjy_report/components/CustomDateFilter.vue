@@ -33,6 +33,7 @@
 import { ref, defineProps, defineEmits, watch, computed } from 'vue';
 import type { DateFilter } from '../../type';
 import { Close } from '@element-plus/icons-vue';
+import { ElIcon, ElForm, ElSelect, ElOption } from 'element-plus';
 
 const props = defineProps<{
 	filter: [string, ...DateFilter];

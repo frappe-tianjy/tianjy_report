@@ -1,27 +1,26 @@
 <template>
-	<div>
-		<ElSelect v-model="val" filterable remote
-			@change="change"
-			:remoteMethod="search" :placeholder="label && tt(label)"
-			@focus="focus"
-			defaultFirstOption
-			:loading="loading || waiting">
-			<ElOption
-				v-for="{ value, label, description } in opts"
-				:key="value"
-				:label="label"
-				:value="value">
-				{{ label }}
-				<small v-if="description">{{ description }}</small>
-			</ElOption>
-		</ElSelect>
-	</div>
+	<ElSelect v-model="val" filterable remote
+		@change="change"
+		:remoteMethod="search" :placeholder="label && tt(label)"
+		@focus="focus"
+		defaultFirstOption
+		:loading="loading || waiting">
+		<ElOption
+			v-for="{ value, label, description } in opts"
+			:key="value"
+			:label="label"
+			:value="value">
+			{{ label }}
+			<small v-if="description">{{ description }}</small>
+		</ElOption>
+	</ElSelect>
 </template>
 
 <script setup lang='ts'>
 import { ref, defineProps, defineEmits, onMounted, computed } from 'vue';
 
 import useDebounce from '../useDebounce';
+import { ElSelect,  ElOption} from 'element-plus';
 
 const props = defineProps<{
 	label?: string;
