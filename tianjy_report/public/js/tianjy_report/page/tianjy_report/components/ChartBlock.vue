@@ -37,12 +37,10 @@
 <script setup lang="ts">
 import { computed, inject, provide, ref, unref, watch, defineProps, reactive, type Ref } from 'vue';
 
-import { ClickOutside as vClickOutside } from 'element-plus';
-
 import { GripVertical, Settings} from 'lucide-vue-next';
 
 import type { ChartOptions, ChartProvide } from '../../type';
-
+import { vLoading } from 'element-plus';
 import { createChart, default as useChart } from './helper';
 import widgets from './widgets/widgets';
 import BlockActions from './BlockActions.vue';
@@ -57,13 +55,12 @@ interface Props {
 const props = defineProps<Props>();
 
 const blockRef = ref(null);
-const searchParams = new URLSearchParams(location.search);
-const reportName = searchParams.get('name');
-const mode = searchParams.get('mode');
+const reportName = inject<Ref<string>>('reportName');
+const mode = inject<Ref<string>>('mode');
 const isPersistence = inject<Ref<boolean>>('isPersistence');
 const reportStartDate = inject<Ref<string>>('reportStartDate');
 const reportEndDate = inject<Ref<string>>('reportEndDate');
-
+const editorContainerRef =  inject<Ref<HTMLDivElement>>('editorContainerRef');
 const chart = reactive<ChartProvide>({
 	data: [],
 	columns: [],
@@ -92,15 +89,15 @@ const isShowChart = computed(() => {
 function getTimeout(infoEntry: IntersectionObserverEntry) {
 	setTimeout(async () => {
 		if (!props.chartName) {
-			const chartName = await createChart(reportName || '', mode);
+			const chartName = await createChart(reportName?.value || '', mode?.value||'');
 			emit('setChartName', chartName);
-			const getChart = useChart(chart, reportName, chartName, mode, isPersistence?.value, reportStartDate?.value, reportEndDate?.value);
-			Object.assign(chart, getChart);
+			const chartOptions = useChart(chart, reportName?.value||'', chartName, mode?.value||'', isPersistence?.value||false, reportStartDate?.value, reportEndDate?.value);
+			Object.assign(chart, chartOptions);
 		} else {
-			const getChart = useChart(chart, reportName, props.chartName, mode, isPersistence?.value, reportStartDate?.value, reportEndDate?.value);
-			Object.assign(chart, getChart);
+			const chartOptions = useChart(chart, reportName?.value||'', props.chartName, mode?.value||'', isPersistence?.value||false, reportStartDate?.value, reportEndDate?.value);
+			Object.assign(chart, chartOptions);
 		}
-		const blockType = mode === 'template' ? 'Tianjy Report Template Block' : 'Tianjy Report Block';
+		const blockType = mode?.value === 'template' ? 'Tianjy Report Template Block' : 'Tianjy Report Block';
 		frappe.model.with_doctype(blockType, () => {
 			const hasWrite = frappe.perm.has_perm(blockType, 0, 'write');
 			if (hasWrite) {
@@ -122,7 +119,7 @@ function observerCallback(entries: IntersectionObserverEntry[]) {
 
 const observer = new IntersectionObserver(observerCallback, {
 	threshold: 0.1,
-	root: document.body,
+	root: editorContainerRef?.value||document.body,
 });
 
 watch(blockRef, () => {

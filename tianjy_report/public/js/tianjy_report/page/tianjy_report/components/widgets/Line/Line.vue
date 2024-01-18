@@ -138,9 +138,6 @@ onMounted(() => {
 onUnmounted(()=>{
 	window.removeEventListener('resize', chart?.resize);
 });
-function valueFormatter(value) {
-	return isNaN(value) ? value : value.toLocaleString();
-}
 </script>
 <style scoped>
 .chart {

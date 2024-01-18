@@ -1,6 +1,6 @@
 import TianjyReport from './tianjy_report/index.vue';
 
-import { createApp } from 'vue';
+import { createApp, h, ref, } from 'vue';
 import Viewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css';
 import 'element-plus/dist/index.css'
@@ -31,3 +31,21 @@ definePage('tianjy-report-page', function (wrapper) {
 	app.use(VueViewer);
 	app.mount(page.parent);
 });
+
+const reportNameRef = ref()
+frappe.ui.form.on('Tianjy Report', {
+	refresh(frm){
+		if(!frm.is_new()){
+			reportNameRef.value = frm.doc.name
+			if(!frm.report_app){
+				const app = createApp({props: [], render: () =>h(TianjyReport, {
+					reportName: reportNameRef.value,
+					mode:'report',
+				})});
+				app.use(VueViewer)
+				app.mount(frm.fields_dict.report_wrapper.wrapper)
+				frm.report_app = app;
+			}
+		}
+	}
+})

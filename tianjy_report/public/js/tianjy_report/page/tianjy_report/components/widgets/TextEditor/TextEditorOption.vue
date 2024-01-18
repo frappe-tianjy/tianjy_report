@@ -17,6 +17,3 @@ interface Emit{
 const emit = defineEmits<Emit>();
 
 </script>
-
-<style lang='less' scoped>
-</style>

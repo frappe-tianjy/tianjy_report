@@ -67,6 +67,3 @@ function change(v:any){
 	emit('change', v);
 }
 </script>
-
-<style lang='less' scoped>
-</style>

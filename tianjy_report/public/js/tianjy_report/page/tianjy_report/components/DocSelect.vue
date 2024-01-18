@@ -91,6 +91,3 @@ function change(v){
 	emit('change', v || '');
 }
 </script>
-
-<style lang='less' scoped>
-</style>

@@ -18,7 +18,7 @@
 			</div>
 			<Tools v-if="(mode==='report'&&edit&&!isPersistence)||(mode==='template')"
 				:editor="editor"></Tools>
-			<div class="container editor-container ck-content">
+			<div ref="editorContainerRef" class="container editor-container ck-content">
 				<editor-content :editor="editor" class="editor" />
 			</div>
 		</div>
@@ -29,7 +29,7 @@
 import { ref, defineProps, defineEmits, onMounted, watch, computed, provide } from 'vue';
 
 import { debounce } from 'lodash';
-import { ElButton, ElTooltip } from 'element-plus';
+import { ElButton, ElTooltip, vLoading } from 'element-plus';
 import zhCn from 'element-plus/dist/locale/zh-cn.js';
 import { ElConfigProvider } from 'element-plus';
 import { useEditor, EditorContent, BubbleMenu } from '@tiptap/vue-3';
@@ -54,7 +54,8 @@ import suggestion from '../command/suggestion';
 import Chart from './components/Chart';
 import Tools from './components/Tools.vue';
 interface Props{
-
+	reportName?:string
+	mode?:'template'|'report'
 }
 const props = defineProps<Props>();
 interface Emit{
@@ -62,8 +63,8 @@ interface Emit{
 }
 const emit = defineEmits<Emit>();
 const searchParams = new URLSearchParams(location.search);
-const reportName = searchParams.get('name');
-const mode = searchParams.get('mode') as 'template'|'report';
+const reportName = computed(()=>props.reportName|| searchParams.get('name'))
+const mode =computed(()=>props.mode || searchParams.get('mode') as 'template'|'report')
 const content = ref<Record<string, any>>({});
 const subject = ref<string>('');
 const loaded = ref<boolean>(false);
@@ -74,14 +75,20 @@ const reportStartDate=ref<string>('');
 const reportEndDate=ref<string>('');
 const edit = ref<boolean>(false);
 const writePermission = ref<boolean>(false);
+const editorContainerRef = ref<HTMLDivElement>();
+
 provide('isPersistence', isPersistence);
 provide('reportStartDate', reportStartDate);
 provide('reportEndDate', reportEndDate);
-const reportType =computed(()=>mode==='template'?'Tianjy Report Template':'Tianjy Report');
+provide('reportName', reportName);
+provide('mode', mode);
+provide('editorContainerRef', editorContainerRef);
+
+const reportType =computed(()=>mode.value==='template'?'Tianjy Report Template':'Tianjy Report');
 
 function saveLayout(json:any){
-	if (!reportName){ return; }
-	frappe.db.set_value(reportType.value, reportName, {layout:json});
+	if (!reportName.value){ return; }
+	frappe.db.set_value(reportType.value, reportName.value, {layout:json});
 }
 const updateLayout = debounce(saveLayout, 500);
 
@@ -131,16 +138,16 @@ const editor = useEditor({
 			}),
 		],
 	});
-watch([()=>reportName, ()=>mode], async()=>{
-	if (!reportName){ return; }
+watch([()=>reportName.value, ()=>mode.value], async()=>{
+	if (!reportName.value){ return; }
 	loaded.value=false;
 	loading.value=true;
-	const res:{layout?:string, subject:string, is_persistence?:0|1, start_date:string, end_date:string} = await frappe.db.get_doc(reportType.value, reportName );
+	const res:{layout?:string, subject:string, is_persistence?:0|1, start_date:string, end_date:string} = await frappe.db.get_doc(reportType.value, reportName.value );
 	content.value = JSON.parse(res.layout||'{}');
 	subject.value = res.subject;
 	reportStartDate.value = res.start_date;
 	reportEndDate.value = res.end_date
-	const editable = mode==='template';
+	const editable = mode.value==='template';
 	editor.value?.setEditable(editable);
 	isPersistence.value = res.is_persistence?.toString()==='1';
 	loaded.value=true;
@@ -158,12 +165,12 @@ async function persistent(){
 	await frappe.call({
 		method: 'tianjy_report.tianjy_report.doctype.tianjy_report.tianjy_report.source_persistence',
 		args: {
-			report_name: reportName,
+			report_name: reportName.value,
 			persistence_state: 1,
 		},
 	});
 	const a = document.createElement('a');
-	a.href = `/app/tianjy-report-page?name=${reportName}&mode=report`;
+	a.href = `/app/tianjy-report-page?name=${reportName.value}&mode=report`;
 	a.click();
 	loading.value=false;
 }

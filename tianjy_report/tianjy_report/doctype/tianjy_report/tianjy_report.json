@@ -17,6 +17,7 @@
   "is_persistence",
   "section_break_7hrhi",
   "layout",
+  "report_wrapper",
   "section_break_y7phq",
   "blocks_tab",
   "blocks"
@@ -43,6 +44,7 @@
   {
    "fieldname": "layout",
    "fieldtype": "JSON",
+   "hidden": 1,
    "label": "Layout",
    "read_only": 1
   },
@@ -72,6 +74,7 @@
   {
    "fieldname": "blocks",
    "fieldtype": "Connection Table",
+   "hidden": 1,
    "label": "Blocks",
    "options": "Tianjy Report Block"
   },
@@ -106,7 +109,13 @@
   {
    "fieldname": "blocks_tab",
    "fieldtype": "Tab Break",
+   "hidden": 1,
    "label": "Blocks"
+  },
+  {
+   "fieldname": "report_wrapper",
+   "fieldtype": "HTML",
+   "label": "Report Wrapper"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -116,7 +125,7 @@
    "link_fieldname": "report"
   }
  ],
- "modified": "2023-05-24 14:47:24.926202",
+ "modified": "2024-01-18 14:55:03.415676",
  "modified_by": "Administrator",
  "module": "Tianjy Report",
  "name": "Tianjy Report",
@@ -139,6 +148,7 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "tianjy_organization_filter_method": "Equal",
  "title_field": "subject",
  "track_changes": 1,
  "track_seen": 1,
