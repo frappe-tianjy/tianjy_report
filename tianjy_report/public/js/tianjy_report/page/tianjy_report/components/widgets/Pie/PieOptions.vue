@@ -9,6 +9,15 @@
 			<el-form-item label="标题" prop="title">
 				<el-input v-model="form.title" @change="changeTitle" />
 			</el-form-item>
+			<el-form-item label="计算方式" prop="method">
+				<ElSelect v-model="form.method"
+					@change="changeMethod">
+					<ElOption v-for="f in METHODS"
+						:value="f"
+						:label="tt(f)">
+					</ElOption>
+				</ElSelect>
+			</el-form-item>
 			<el-form-item label="X 轴" prop="xAxis">
 				<ElSelect v-model="form.xAxis"
 					@change="changeX">
@@ -18,7 +27,7 @@
 					</ElOption>
 				</ElSelect>
 			</el-form-item>
-			<el-form-item label="Y 轴" prop="yAxis">
+			<el-form-item v-if="isShowY" label="Y 轴" prop="yAxis">
 				<ElSelect v-model="form.yAxis"
 					@change="changeY">
 					<ElOption v-for="f in numberFields"
@@ -39,6 +48,7 @@ import { ElForm, ElSelect, ElOption, ElFormItem, ElInput } from 'element-plus';
 
 import type { ChartOptions, ChartProvide } from '../../../../type';
 import { numberFieldTypes, notValueField } from '../../helper';
+const METHODS = ['Count', 'Sum', 'Value'];
 
 const formRef = ref<FormInstance>();
 const tt=__;
@@ -55,13 +65,15 @@ const doctype = computed(()=>chart?.doc.source_doctype);
 const form = reactive({
   title: chart?.doc.options?.title,
   xAxis:chart?.doc.options?.xAxis?.fieldname,
-  yAxis:chart?.doc.options?.yAxis?.fieldname,
+  yAxis:chart?.doc.options?.yAxis?.[0]?.fieldname,
+  method: chart?.doc.options?.method,
 });
 
 watch(()=>chart?.doc.options, ()=>{
 	form.title = chart?.doc.options?.title;
 	form.xAxis = chart?.doc.options?.xAxis?.fieldname;
-	form.yAxis = chart?.doc.options?.yAxis?.fieldname;
+	form.yAxis = chart?.doc.options?.yAxis?.[0]?.fieldname;
+	form.method = chart?.doc.options?.method;
 });
 
 const rules = reactive<FormRules>({
@@ -106,7 +118,11 @@ function changeY(v:string){
 	const yAxis = fields.value.find(item=>item.fieldname === form.yAxis);
 	chart.doc.options.yAxis = [{label:yAxis?.label, fieldname:yAxis?.fieldname, fieldtype:yAxis?.fieldtype}];
 }
-
+const isShowY = computed(()=>form.method !== 'Count')
+function changeMethod(v:string){
+	if (!chart){ return; }
+	chart.doc.options.method = v;
+}
 </script>
 
 <style lang='less' scoped>

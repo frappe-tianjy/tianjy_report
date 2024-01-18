@@ -18,10 +18,55 @@ let chart:any = null;
 const formatOptions = computed(()=>{
 	const xAxisF = props.options.xAxis?.fieldname;
 	const yAxisF = props.options.yAxis?.[0]?.fieldname;
-	const series = [{
-		'type': 'pie',
-		radius:'50%',
-		data:(props.data||[])?.map(item=>{
+	const methodOption = props.options.method;
+	let propsData = props.data||[]
+	if (props.options.xAxis?.fieldtype === 'Date' || props.options.xAxis?.fieldtype==='Date Time'){
+		propsData = propsData.sort((pre, next)=>pre[xAxisF]>next[xAxisF]?1:-1)
+	}
+
+	const xAxisDataSet:Set<string> = new Set
+	let xAxisData:string[] = []
+	if (methodOption === 'Sum'||methodOption === 'Count'){
+		propsData.forEach(item=>{
+			const isLink = props.options.xAxis?.fieldtype === 'Link'||props.options.xAxis?.fieldtype === 'Tree Select';
+			const value = isLink?item[`${xAxisF}.title`]:item[xAxisF]
+			xAxisDataSet.add(__(value))
+		});
+		xAxisData = Array.from(xAxisDataSet)
+	}else{
+		xAxisData = propsData.map(item=>{
+			const isLink = props.options.xAxis?.fieldtype === 'Link'||props.options.xAxis?.fieldtype === 'Tree Select';
+			return isLink?__(item[`${xAxisF}.title`]):__(item[xAxisF]);
+		});
+	}
+
+	let data = []
+	if(methodOption === 'Sum'){
+		data = xAxisData.map(x=>{
+			const filterData = propsData.filter(d=>{
+				const isLink = props.options.xAxis?.fieldtype === 'Link'||props.options.xAxis?.fieldtype === 'Tree Select';
+				const value = isLink?d[`${xAxisF}.title`]:d[xAxisF]
+				return value === x
+			})
+			return {
+				value:filterData.reduce((pre,next)=>pre+(next[yAxisF]||0), 0),
+				name:`${x}(求和)`,
+			}
+		})
+	}else if(methodOption === 'Count'){
+		data = xAxisData.map(x=>{
+			const filterData = propsData.filter(d=>{
+				const isLink = props.options.xAxis?.fieldtype === 'Link'||props.options.xAxis?.fieldtype === 'Tree Select';
+				const value = isLink?d[`${xAxisF}.title`]:d[xAxisF]
+				return value === x
+			})
+			return {
+				value:filterData.length,
+				name:`${x}(个数)`,
+			}
+		})
+	}else {
+		data=propsData.map(item=>{
 			const isLink = props.options.xAxis?.fieldtype === 'Link'||props.options.xAxis?.fieldtype === 'Tree Select';
 			const label = isLink?__(item[`${xAxisF}.title`]):__(item[xAxisF]);
 			const data = {
@@ -29,7 +74,13 @@ const formatOptions = computed(()=>{
 				name:label,
 			};
 			return data;
-		}),
+		});
+	}
+
+	const series = [{
+		'type': 'pie',
+		radius:'50%',
+		data,
 		label:{
 			normal:{
 				show:true,

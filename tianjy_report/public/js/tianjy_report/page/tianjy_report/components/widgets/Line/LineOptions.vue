@@ -9,6 +9,15 @@
 			<el-form-item label="标题" prop="title">
 				<el-input v-model="form.title" @change="changeTitle" />
 			</el-form-item>
+			<el-form-item label="计算方式" prop="method">
+				<ElSelect v-model="form.method"
+					@change="changeMethod">
+					<ElOption v-for="f in METHODS"
+						:value="f"
+						:label="tt(f)">
+					</ElOption>
+				</ElSelect>
+			</el-form-item>
 			<el-form-item label="X 轴" prop="xAxis">
 				<ElSelect v-model="form.xAxis"
 					@change="changeX">
@@ -18,7 +27,7 @@
 					</ElOption>
 				</ElSelect>
 			</el-form-item>
-			<el-form-item label="Y 轴" prop="yAxis">
+			<el-form-item v-if="isShowY" label="Y 轴" prop="yAxis">
 				<ElSelect v-model="form.yAxis" multiple
 					@change="changeY">
 					<ElOption v-for="f in numberFields"
@@ -45,6 +54,7 @@ import { ElForm, ElSelect, ElOption, ElFormItem, ElInput } from 'element-plus';
 
 import type { ChartOptions, ChartProvide } from '../../../../type';
 import { numberFieldTypes, notValueField } from '../../helper';
+const METHODS = ['Count', 'Sum', 'Value'];
 
 const formRef = ref<FormInstance>();
 const tt=__;
@@ -64,7 +74,7 @@ const form = reactive({
   yAxis:chart?.doc.options?.yAxis?.map(item=>item.fieldname),
   xLabel: chart?.doc.options?.xLabel,
   yLabel: chart?.doc.options?.yLabel,
-
+  method: chart?.doc.options?.method,
 });
 
 watch(()=>chart?.doc.options, ()=>{
@@ -73,6 +83,7 @@ watch(()=>chart?.doc.options, ()=>{
 	form.yAxis = chart?.doc.options?.yAxis?.map(item=>item.fieldname);
 	form.xLabel = chart?.doc.options?.xLabel;
 	form.yLabel = chart?.doc.options?.yLabel;
+	form.method = chart?.doc.options?.method;
 });
 
 const rules = reactive<FormRules>({
@@ -123,6 +134,12 @@ function changeY(v:string[]){
 	if (!chart){ return; }
 	const yAxisArr = fields.value.filter(item=>v.includes(item.fieldname));
 	chart.doc.options.yAxis = yAxisArr.map(item=>({label:item?.label, fieldname:item?.fieldname, fieldtype:item?.fieldtype}));
+}
+const isShowY = computed(()=>form.method !== 'Count')
+
+function changeMethod(v:string){
+	if (!chart){ return; }
+	chart.doc.options.method = v;
 }
 
 </script>
