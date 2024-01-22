@@ -3,7 +3,6 @@ import TianjyReport from './tianjy_report/index.vue';
 import { createApp, h, ref, } from 'vue';
 import Viewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css';
-import 'element-plus/dist/index.css'
 
 function definePage(name, on_page_load) {
 	let page = frappe.pages[name];
